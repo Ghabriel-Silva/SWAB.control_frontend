@@ -1,10 +1,8 @@
 "use client"
 
-import { Box, Flex, HStack } from "@chakra-ui/react";
 
 import { TextImage } from "./components/textImage";
 import { ImageLogin } from "./components/imageLogin";
-import { FormContainer } from "./components/formContainer";
 
 export default function LoginPage() {
     return (
@@ -19,7 +17,7 @@ export default function LoginPage() {
                 <TextImage />
             </Box>
             <HStack flex={1} align="center" justify="center" p={10}>
-                <FormContainer />
+             
             </HStack>
         </Flex>
     )

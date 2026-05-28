@@ -1,0 +1,109 @@
+
+"use client"
+
+import Link from "next/link"
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Heading,
+  Text,
+  VStack,
+} from "@chakra-ui/react"
+
+export default function NotFound() {
+  return (
+    <Flex
+      minH="100vh"
+      bg="gray.950"
+      color="white"
+      align="center"
+      justify="center"
+      position="relative"
+      overflow="hidden"
+      px={6}
+    >
+      {/* Glow esquerda */}
+      <Box
+        position="absolute"
+        top="-120px"
+        left="-120px"
+        w="320px"
+        h="320px"
+        bg="teal.400"
+        opacity={0.2}
+        filter="blur(120px)"
+        borderRadius="full"
+      />
+
+      {/* Glow direita */}
+      <Box
+        position="absolute"
+        bottom="-120px"
+        right="-120px"
+        w="320px"
+        h="320px"
+        bg="pink.400"
+        opacity={0.2}
+        filter="blur(120px)"
+        borderRadius="full"
+      />
+
+      <Container maxW="container.md">
+        <VStack gap={6} textAlign="center">
+          <Heading
+            fontSize={{ base: "6rem", md: "9rem" }}
+            lineHeight="1"
+            fontWeight="black"
+            bgGradient="linear(to-r, teal.300, pink.400)"
+            bgClip="text"
+          >
+            404
+          </Heading>
+
+          <Heading size="lg">
+            Página não encontrada
+          </Heading>
+
+          <Text
+            color="gray.400"
+            maxW="500px"
+            fontSize={{ base: "sm", md: "md" }}
+          >
+            A página que você tentou acessar não existe
+            ou foi removida do sistema.
+          </Text>
+
+          <Flex gap={4} wrap="wrap" justify="center">
+            <Button
+              as={Link}
+              href="/"
+              rounded="full"
+              px={6}
+              bgGradient="linear(to-r, teal.300, pink.400)"
+              color="black"
+              _hover={{
+                opacity: 0.9,
+              }}
+            >
+              Voltar ao início
+            </Button>
+
+            <Button
+              variant="outline"
+              rounded="full"
+              borderColor="whiteAlpha.300"
+              _hover={{
+                bg: "whiteAlpha.100",
+              }}
+              onClick={() => window.history.back()}
+            >
+              Voltar página
+            </Button>
+          </Flex>
+        </VStack>
+      </Container>
+    </Flex>
+  )
+}
