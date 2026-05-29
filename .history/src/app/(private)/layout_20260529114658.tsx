@@ -1,0 +1,56 @@
+"use client"
+
+import { Box, Flex, Icon, HStack, Text } from "@chakra-ui/react";
+import { useState } from "react";
+import { BsLayoutSidebarInset } from "react-icons/bs";
+import { SubtitleText, BodyText, TitleText } from "@/app/shared/components";
+
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+    const [slider, setSlider] = useState(false)
+    const SIDEBAR_TRANSITION = "0.3s ease";
+    const userName = localStorage.getItem('userName')
+
+    return (
+        <Box height={"100vh"} width={"100vw"}  >
+            <Flex flexDirection={"row"}>
+                <Box
+                    bg={"red "}
+                    w={slider ? "0px" : "200px"}
+                    transition={`width ${SIDEBAR_TRANSITION}`}
+                    height={"100vh"}
+                    overflow={"hidden"}
+                    flexShrink={0}
+                >
+                    <Box w={"200px"}>
+                        <Flex>Texto de testa para todas</Flex>
+                    </Box>
+                </Box>
+                <Box flex={1}>
+                    <HStack
+                        // bg={"pink"}
+                        height={"50px"}
+                        p={4}
+                        gap={6}
+                    >
+                        <Icon
+                            cursor={"e-resize"}
+                            onClick={() => setSlider(prev => !prev)}
+                            color="fg.muted"
+                            _hover={{ color: "accent.fg" }}
+                            transition="color 0.2s ease, transform 0.3s ease"
+                            transform={slider ? "rotate(180deg)" : "rotate(0)"}
+                        >
+                            <BsLayoutSidebarInset />
+                        </Icon>
+                        <Text color="fg.subtle">|</Text>
+                        <SubtitleText>
+                            
+                        </SubtitleText>
+                    </HStack>
+                    {children}
+                </Box>
+            </Flex>
+        </Box>
+    )
+}

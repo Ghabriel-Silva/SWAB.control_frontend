@@ -1,0 +1,5 @@
+
+export function decodeToken(request:Next){
+    const cookies =  
+    cookies.s
+}

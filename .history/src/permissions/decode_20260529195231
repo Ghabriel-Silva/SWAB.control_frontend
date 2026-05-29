@@ -1,0 +1,6 @@
+import { NextRequest, NextResponse } from "next/server"
+
+export default function decodeToken(request: NextRequest) {
+    const cookies = request.cookies.get('token')
+    console.log(cookies)
+}

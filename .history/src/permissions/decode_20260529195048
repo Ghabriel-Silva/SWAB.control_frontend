@@ -1,0 +1,5 @@
+import { NextRequest, NextResponse } from "next/server"
+export function decodeToken() {
+    const cookies = NextRequest.co
+        cookies
+}
