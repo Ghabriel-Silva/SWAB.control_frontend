@@ -2,8 +2,6 @@
 // import { getSession } from "@/permissions/get.sessions";
 // import SidebarLayout from "@/app/(private)/SidebarLayout"
 
-import { PrivateShell } from "./components/PrivateShell"
-
 // export default async function PrivateLayout({ children }: { children: React.ReactNode }) {
 //     const session = await getSession()
 //     return (

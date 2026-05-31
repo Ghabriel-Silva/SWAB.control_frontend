@@ -1,7 +1,7 @@
 "use client"
 
 import { Box, Flex, Icon, HStack, Text, VStack, Button } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsLayoutSidebarInset } from "react-icons/bs";
 import { SubtitleText} from "@/app/(private)/components/index";
 import { getInitials } from "./swab/utils/getInitials";
