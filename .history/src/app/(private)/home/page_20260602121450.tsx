@@ -1,0 +1,13 @@
+import { Heading, HStack , VStack} from "@chakra-ui/react";
+
+export default function homePage() {
+
+    return (
+        <HStack bg={'red'}>
+            <VStack>
+                <Heading>SWAB.Control</Heading>
+                <Text>Controle de qualidade e monitoramento de swabs de forma simples e eficiente.</Text>
+            </VStack>
+        </HStack>
+    )
+}
