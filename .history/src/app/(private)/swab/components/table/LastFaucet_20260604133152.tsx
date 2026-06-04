@@ -1,0 +1,5 @@
+
+interface 
+export function lastFaucetTank(){
+
+}

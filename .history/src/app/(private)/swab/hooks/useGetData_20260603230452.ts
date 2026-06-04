@@ -1,0 +1,6 @@
+
+
+
+const useGetData(){
+    return useQue
+}

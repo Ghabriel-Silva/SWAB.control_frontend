@@ -1,0 +1,47 @@
+import { SwabCheckResult } from "../../types/swab";
+
+export interface Tank {
+    id: string;
+    name: string;
+}
+
+export interface Check {
+    id: string;
+    type: string;
+    result: SwabCheckResult;
+    validatedAt: string | null;
+    valueAtp: number | null;
+}
+
+export interface SwabApiItem {
+    id: string;
+    internalCode: string;
+    faucetCode: string | null;
+    isCancelled: boolean;
+    cancelledAt: string | null;
+    cancelReason: string | null;
+    createdAt: string;
+    updatedAt: string;
+    lastFaucetTank: string;
+    operator: string | null;
+    tank: Tank;
+    check: Check;
+}
+
+export interface SwabResponse {
+    success: boolean;
+    message: string;
+    data: SwabApiItem[];
+}
+
+export interface SwabGridRow {
+  id: string;
+  lote: string;
+  dataHora: string;
+  tankSilo: string;
+  ultimaTorneira: string;
+  tipoSwab: string;
+  resultado: SwabCheckResult;
+  valorAtp: number | null;
+  operador: string | null;
+}
