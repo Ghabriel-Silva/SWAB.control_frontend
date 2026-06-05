@@ -1,0 +1,26 @@
+import { SubtitleText } from "@/app/(private)/components/index";
+import { SwabCheckResult } from "@/app/(private)/types/swab"
+import { Badge, Box } from "@chakra-ui/react";
+
+
+export const Result = ({ value }: S) => {
+    const result = value
+
+    const color =
+        result === SwabCheckResult.APPROVED
+            ? "green"
+            : result === SwabCheckResult.PENDING
+                ? "yellow"
+                : "red";
+
+    return (
+        <Box>
+            <Badge colorPalette={color}>
+                <SubtitleText>
+                    {result}
+                </SubtitleText>
+
+            </Badge>
+        </Box>
+    );
+}
