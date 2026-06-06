@@ -7,15 +7,7 @@ import {
     useListCollection,
 } from "@chakra-ui/react"
 
-
 export const OperatorSelect = () => {
-    const { contains } = useFilter({ sensitivity: "base" })
-
-    const { collection, filter } = useListCollection({
-        initialItems: people,
-        filter: contains,
-    })
-
     return (
         <Combobox.Root
             collection={collection}
