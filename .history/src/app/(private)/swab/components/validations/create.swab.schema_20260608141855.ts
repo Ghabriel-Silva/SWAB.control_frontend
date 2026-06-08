@@ -1,0 +1,28 @@
+export const createSwabSchema = yup.object({
+    tank: yup
+        .array()
+        .transform((_, originalValue) => {
+            if (typeof originalValue === 'string') {
+                return originalValue
+                    .split(',')
+                    .map(item => item.trim().toUpperCase())
+                    .filter(Boolean);
+            }
+
+            return originalValue;
+        })
+        .of(
+            yup.string().required()
+        )
+        .required('O tank é obrigatório')
+        .min(1, 'Precisa ter pelo menos um item')
+        .test(
+            'unique',
+            'Valores duplicados',
+            (value) => {
+                if (!value) return true;
+
+                return new Set(value).size === value.length;
+            }
+        ),
+});

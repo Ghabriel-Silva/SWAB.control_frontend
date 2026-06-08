@@ -1,0 +1,36 @@
+import { BodyText } from "@/app/(private)/components/index";
+import { Badge, Box, Button, HStack, Input } from "@chakra-ui/react";
+
+
+export function ContainerCreate() {
+    return (
+        <Box border={"1px solid"} borderColor={"gray.200"} p={4} borderRadius={""} >
+            <HStack justifyContent={"space-between"} flexWrap={"wrap"} alignContent={"center"}>
+                <BodyText>
+                    Iniciar Swab
+                </BodyText>
+                <HStack w={"100%"} flex={1} minW={"280px"}>
+                    <Input placeholder="ex: c4" />
+                </HStack>
+                <HStack gap={4} >
+                    <BodyText>
+                        Unico
+                        <Badge>
+                            C4
+                        </Badge>
+                    </BodyText>
+                    <BodyText>
+                        Lista
+                        <Badge>
+                            C4, A22
+                        </Badge>
+                    </BodyText>
+
+                    <Button bg={"blue"} minW={"100px"}>
+                        Criar
+                    </Button>
+                </HStack>
+            </HStack>
+        </Box>
+    )
+}
