@@ -2,7 +2,7 @@ import * as yup from "yup"
 
 export const createSwabSchema = yup.object({
     tank: yup
-        .array()
+        .string()
         .transform((_, originalValue) => {
             if (typeof originalValue === 'string') {
                 return originalValue
@@ -16,7 +16,7 @@ export const createSwabSchema = yup.object({
         .of(
             yup.string()
         )
-        .min(0, 'Precisa ter pelo menos um item')
+        .min(1, 'Precisa ter pelo menos um item')
         .test(
             'unique',
             'Valores duplicados',

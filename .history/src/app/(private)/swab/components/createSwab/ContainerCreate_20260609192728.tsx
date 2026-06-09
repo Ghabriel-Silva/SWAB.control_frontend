@@ -73,7 +73,7 @@ export function ContainerCreate() {
                             </Badge>
                         </BodyText>
 
-                        <Button bg={"blue"} minW={"100px"} size={"sm"} type="submit" loading={isPending} loadingText="Criando...">
+                        <Button bg={"blue"} minW={"100px"} size={"sm"} type="submit" loading={} loadingText="Criando...">
                             <Icon size={"xs"}>
                                 <FaPlus />
                             </Icon>

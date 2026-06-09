@@ -13,8 +13,7 @@ export function ContainerCreate() {
 
     const methods = useForm<CreateSwabType>({
         resolver: yupResolver(createSwabSchema),
-        mode: 'onSubmit',
-
+        mode: 'onSubmit'
     })
 
     const {
@@ -29,11 +28,8 @@ export function ContainerCreate() {
 
 
     const OnChange: SubmitHandler<CreateSwabType> = (data: CreateSwabType) => {
-        mutate(data, {
-            onSuccess: () => {
-                reset()
-            }
-        })
+        mutate(data, O)
+        
     }
     return (
         <form onSubmit={handleSubmit(OnChange)}>
@@ -73,7 +69,7 @@ export function ContainerCreate() {
                             </Badge>
                         </BodyText>
 
-                        <Button bg={"blue"} minW={"100px"} size={"sm"} type="submit" loading={isPending} loadingText="Criando...">
+                        <Button bg={"blue"} minW={"100px"} size={"sm"} type="submit" >
                             <Icon size={"xs"}>
                                 <FaPlus />
                             </Icon>

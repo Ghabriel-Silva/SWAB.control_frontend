@@ -13,8 +13,7 @@ export function ContainerCreate() {
 
     const methods = useForm<CreateSwabType>({
         resolver: yupResolver(createSwabSchema),
-        mode: 'onSubmit',
-
+        mode: 'onSubmit'
     })
 
     const {
@@ -24,16 +23,9 @@ export function ContainerCreate() {
         formState: { errors }
     } = methods
 
-    const { mutate, isSuccess, isPending } = useCreateSwab()
-
-
-
+    const {mutation} = useCreateSwab()
     const OnChange: SubmitHandler<CreateSwabType> = (data: CreateSwabType) => {
-        mutate(data, {
-            onSuccess: () => {
-                reset()
-            }
-        })
+        muta
     }
     return (
         <form onSubmit={handleSubmit(OnChange)}>
@@ -43,6 +35,7 @@ export function ContainerCreate() {
                 p={4}
                 borderRadius={"sm"}
                 justifyContent={"space-between"}
+
             >
                 <HStack
                     justifyContent={"space-between"}
@@ -73,7 +66,7 @@ export function ContainerCreate() {
                             </Badge>
                         </BodyText>
 
-                        <Button bg={"blue"} minW={"100px"} size={"sm"} type="submit" loading={isPending} loadingText="Criando...">
+                        <Button bg={"blue"} minW={"100px"}  size={"sm"} type="submit">
                             <Icon size={"xs"}>
                                 <FaPlus />
                             </Icon>

@@ -2,9 +2,8 @@ import { BodyText } from "@/app/(private)/components/index";
 import { Badge, Box, Button, Field, HStack, Icon, Input } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa6";
-import { createSwabSchema, CreateSwabType } from "../../validations/create.swab.schema";
+import { createSwabSchema, CreateSwabType } from "../validations/create.swab.schema";
 import { yupResolver } from "@hookform/resolvers/yup"
-import { useCreateSwab } from "../../hooks/useCreateSwab";
 
 
 
@@ -13,8 +12,7 @@ export function ContainerCreate() {
 
     const methods = useForm<CreateSwabType>({
         resolver: yupResolver(createSwabSchema),
-        mode: 'onSubmit',
-
+        mode: 'onSubmit'
     })
 
     const {
@@ -24,16 +22,8 @@ export function ContainerCreate() {
         formState: { errors }
     } = methods
 
-    const { mutate, isSuccess, isPending } = useCreateSwab()
-
-
-
     const OnChange: SubmitHandler<CreateSwabType> = (data: CreateSwabType) => {
-        mutate(data, {
-            onSuccess: () => {
-                reset()
-            }
-        })
+        console.log(data)
     }
     return (
         <form onSubmit={handleSubmit(OnChange)}>
@@ -43,6 +33,7 @@ export function ContainerCreate() {
                 p={4}
                 borderRadius={"sm"}
                 justifyContent={"space-between"}
+
             >
                 <HStack
                     justifyContent={"space-between"}
@@ -55,7 +46,9 @@ export function ContainerCreate() {
                     </BodyText>
                     <HStack w={"100%"} flex={1} minW={"280px"}>
                         <Field.Root invalid={!!errors.tank?.message} >
-                            <Input placeholder="ex: c4"  {...register('tank')} />
+                            <Input placeholder="ex: c4"  {...register('tank', {
+                                onBlur
+                            })} />
                             <Field.ErrorText>{errors.tank?.message}</Field.ErrorText>
                         </Field.Root>
                     </HStack>
@@ -73,7 +66,7 @@ export function ContainerCreate() {
                             </Badge>
                         </BodyText>
 
-                        <Button bg={"blue"} minW={"100px"} size={"sm"} type="submit" loading={isPending} loadingText="Criando...">
+                        <Button bg={"blue"} minW={"100px"}  size={"sm"} type="submit">
                             <Icon size={"xs"}>
                                 <FaPlus />
                             </Icon>

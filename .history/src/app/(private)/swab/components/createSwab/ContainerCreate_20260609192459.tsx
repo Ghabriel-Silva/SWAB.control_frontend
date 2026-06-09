@@ -14,7 +14,7 @@ export function ContainerCreate() {
     const methods = useForm<CreateSwabType>({
         resolver: yupResolver(createSwabSchema),
         mode: 'onSubmit',
-
+        
     })
 
     const {
@@ -73,7 +73,7 @@ export function ContainerCreate() {
                             </Badge>
                         </BodyText>
 
-                        <Button bg={"blue"} minW={"100px"} size={"sm"} type="submit" loading={isPending} loadingText="Criando...">
+                        <Button bg={"blue"} minW={"100px"} size={"sm"} type="submit" >
                             <Icon size={"xs"}>
                                 <FaPlus />
                             </Icon>
