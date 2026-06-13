@@ -1,6 +1,8 @@
+import { InfoNull } from "../../components/ui/InfoNull"
+
 export function defaultValue<T>(value: T) {
     if (!value || String(value).trim() === "") {
-        return "-"
+        return <InfoNull
     }
     return value
 }
