@@ -1,0 +1,6 @@
+import { SwabCheckType } from "../types/swab";
+
+
+export const defineColorTypeSwab = (v: SwabCheckType) => {
+    swab
+}
