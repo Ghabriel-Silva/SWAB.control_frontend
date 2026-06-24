@@ -1,6 +1,6 @@
 import { Button, GridItem, HStack, Input, SimpleGrid, Textarea } from "@chakra-ui/react"
 import { FormProvider, useForm, useWatch } from "react-hook-form"
-import { Calendar, OperatorSelect, ResultSelect, Justification, TypeSwabSelect } from "@/app/(private)/swab/components/index";
+import { Calendar, OperatorSelect, ResultSelect, SameFauceteJustification, TypeSwabSelect } from "@/app/(private)/swab/components/index";
 import { FormField } from "@/app/(private)/components";
 import { SwabDataProps } from "../../types/swab.dataProps";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -57,7 +57,6 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
     })
 
 
-
     const justification = useWatch({
         control,
         name: "sameFaucetJustification"
@@ -101,12 +100,8 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
                         label="Tipo Swab"
                         error={errors.performedType?.message}
                     >
-                        <HStack>
-                            <TypeSwabSelect />
-                            {justification && (
-                                <Justification valueJustification="updateSwabJustification" />
-                            )}
-                        </HStack>
+                       <HStack
+
                     </FormField>
 
                     {/* Data da realiação do ATP valor default data da criação */}
@@ -134,7 +129,7 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
                         <HStack>
                             <Input size={"xs"} placeholder="ex: 22" {...register('faucetCode')} />
                             {isSameFaucet && (
-                                <Justification valueJustification="sameFaucetJustification" />
+                                <SameFauceteJustification valueJustification="sameFaucetJustification" />
                             )}
                         </HStack>
                     </FormField>

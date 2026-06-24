@@ -54,16 +54,13 @@ export const updateSwabSchema = yup.object({
         )
         .test(
             'update_type_swab',
-            'Justifique a mudança de Swab',
+            'Justifique a mudançã do Swab de forma clara',
             function (value) {
                 const context = this.options.context as
                     { typeSwabBD: SwabCheckType }
-                const valueAtpMicro = ATP_REQUIRED_TYPES.includes(context.typeSwabBD as SwabCheckType)
+                if (value == context.typeSwabBD) return true
 
-                if (valueAtpMicro && value === SwabCheckType.VISUAL) {
-                    return (this.parent.observation.trim().length ?? 0) > 0
-                }
-                return true
+                return (this.parent. observation)
 
             }
         )
@@ -107,13 +104,7 @@ export const updateSwabSchema = yup.object({
         .string()
         .max(250, 'O maximo de caracteres é 250')
         .trim()
-        .nullable(),
-
-    updateSwabJustification: yup
-        .string()
-        .max(250, 'O maximo de caracteres é 250')
-        .trim()
-        .nullable(),
+        .nullable()
 })
 
 export type UpdateSwabType = yup.InferType<typeof updateSwabSchema>

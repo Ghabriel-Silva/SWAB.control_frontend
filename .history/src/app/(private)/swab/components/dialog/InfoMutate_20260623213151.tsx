@@ -103,7 +103,7 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
                     >
                         <HStack>
                             <TypeSwabSelect />
-                            {justification && (
+                            {jus && (
                                 <Justification valueJustification="updateSwabJustification" />
                             )}
                         </HStack>

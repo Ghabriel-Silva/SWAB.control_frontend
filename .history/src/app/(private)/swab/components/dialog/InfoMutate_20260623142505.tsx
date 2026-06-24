@@ -1,6 +1,6 @@
 import { Button, GridItem, HStack, Input, SimpleGrid, Textarea } from "@chakra-ui/react"
 import { FormProvider, useForm, useWatch } from "react-hook-form"
-import { Calendar, OperatorSelect, ResultSelect, Justification, TypeSwabSelect } from "@/app/(private)/swab/components/index";
+import { Calendar, OperatorSelect, ResultSelect, SameFauceteJustification, TypeSwabSelect } from "@/app/(private)/swab/components/index";
 import { FormField } from "@/app/(private)/components";
 import { SwabDataProps } from "../../types/swab.dataProps";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,7 +15,7 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
         mode: 'onChange',
         context: {
             lastFaucetLocation: swab.lastFaucetLocation,
-            typeSwabBD: swab.check.type
+            typeSwabBD:swab.check.
         },
         defaultValues: {
             validatedAt: !swab.check.validatedAt
@@ -57,7 +57,6 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
     })
 
 
-
     const justification = useWatch({
         control,
         name: "sameFaucetJustification"
@@ -68,17 +67,6 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
             trigger('faucetCode')
         }
     }, [justification, trigger])
-
-    const oberservation = useWatch({
-        control,
-        name: "observation"
-    })
-
-    useEffect(() => {
-        if (oberservation?.trim()) {
-            trigger('performedType')
-        }
-    }, [oberservation, trigger])
 
 
     const OnSubmit = (data: UpdateSwabType) => {
@@ -101,12 +89,7 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
                         label="Tipo Swab"
                         error={errors.performedType?.message}
                     >
-                        <HStack>
-                            <TypeSwabSelect />
-                            {justification && (
-                                <Justification valueJustification="updateSwabJustification" />
-                            )}
-                        </HStack>
+                        <TypeSwabSelect />
                     </FormField>
 
                     {/* Data da realiação do ATP valor default data da criação */}
@@ -134,7 +117,7 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
                         <HStack>
                             <Input size={"xs"} placeholder="ex: 22" {...register('faucetCode')} />
                             {isSameFaucet && (
-                                <Justification valueJustification="sameFaucetJustification" />
+                                <SameFauceteJustification />
                             )}
                         </HStack>
                     </FormField>
@@ -174,7 +157,7 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
                     </FormField>
 
                     {/* Observarções gerais da analise */}
-                    <GridItem colSpan={{ base: 2, md: 3, lg: 3 }}>
+                    <GridItem colSpan={{base: 2, md: 3, lg: 3}}>
                         <FormField
                             label="Oberservações"
                             error={errors.observation?.message}

@@ -57,7 +57,6 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
     })
 
 
-
     const justification = useWatch({
         control,
         name: "sameFaucetJustification"
@@ -103,7 +102,7 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
                     >
                         <HStack>
                             <TypeSwabSelect />
-                            {justification && (
+                            {isSameFaucet && (
                                 <Justification valueJustification="updateSwabJustification" />
                             )}
                         </HStack>

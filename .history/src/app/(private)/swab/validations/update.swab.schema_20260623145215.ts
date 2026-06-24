@@ -60,10 +60,12 @@ export const updateSwabSchema = yup.object({
                     { typeSwabBD: SwabCheckType }
                 const valueAtpMicro = ATP_REQUIRED_TYPES.includes(context.typeSwabBD as SwabCheckType)
 
-                if (valueAtpMicro && value === SwabCheckType.VISUAL) {
-                    return (this.parent.observation.trim().length ?? 0) > 0
+                if (valueAtpMicro && value === SwabCheckType.VISUAL &&
+                   (this.parent.observation.trim().length ?? 0) > 0
+                ) {
+    return(this.parent.observation.trim().length ?? 0) > 0
                 }
-                return true
+return true
 
             }
         )
@@ -92,28 +94,22 @@ export const updateSwabSchema = yup.object({
 
         }),
 
-    observation: yup
-        .string()
-        .max(500, 'O campo observações deve conter no máximo 500 caracteres')
-        .notRequired()
-        .trim()
-        .when('result', {
-            is: (value: SwabCheckResult) =>
-                value === SwabCheckResult.REPROVED,
-            then: (schema) =>
-                schema.required('Oberservação é obrigatório quando o swab for reprovado')
-        }),
-    sameFaucetJustification: yup
-        .string()
-        .max(250, 'O maximo de caracteres é 250')
-        .trim()
-        .nullable(),
-
-    updateSwabJustification: yup
-        .string()
-        .max(250, 'O maximo de caracteres é 250')
-        .trim()
-        .nullable(),
+        observation: yup
+            .string()
+            .max(500, 'O campo observações deve conter no máximo 500 caracteres')
+            .notRequired()
+            .trim()
+            .when('result', {
+                is: (value: SwabCheckResult) =>
+                    value === SwabCheckResult.REPROVED,
+                then: (schema) =>
+                    schema.required('Oberservação é obrigatório quando o swab for reprovado')
+            }),
+            sameFaucetJustification: yup
+                .string()
+                .max(250, 'O maximo de caracteres é 250')
+                .trim()
+                .nullable()
 })
 
 export type UpdateSwabType = yup.InferType<typeof updateSwabSchema>
