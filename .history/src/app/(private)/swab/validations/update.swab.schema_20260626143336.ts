@@ -1,6 +1,10 @@
 import * as yup from 'yup'
 import { SwabCheckResult, SwabCheckType } from '../../types/swab'
-import { ATP_REQUIRED_TYPES } from '../types/atp.required.types';
+
+const ATP_REQUIRED_TYPES = [
+    SwabCheckType.ATP,
+    SwabCheckType.MICRO
+]
 
 export const updateSwabSchema = yup.object({
     validatedAt: yup
@@ -98,7 +102,7 @@ export const updateSwabSchema = yup.object({
         .trim()
          .transform((value) => {
             return value.trim() === '' ? null : value
-        })
+        })F
         .when('result', {
             is: (value: SwabCheckResult) =>
                 value === SwabCheckResult.REPROVED,
@@ -116,6 +120,7 @@ export const updateSwabSchema = yup.object({
             'has-Value-in-input',
             'Justifique o uso da mesma torneira',
             (value) => {
+                if (!value) return true
                 return (value?.trim().length ?? 0) > 0
             }
         )
@@ -129,6 +134,7 @@ export const updateSwabSchema = yup.object({
             'has-Value-in-input',
             'Justifique a mudança de Swab',
             (value) => {
+                if (!value) return true
                 return (value?.trim().length ?? 0) > 0
             }
         )

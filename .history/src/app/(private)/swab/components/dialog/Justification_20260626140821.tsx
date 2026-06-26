@@ -22,9 +22,8 @@ type valueToRevalidate = keyof UpdateSwabType
 interface PropsJustification {
     valueJustification: justification
     inputRevalidate: valueToRevalidate
-    textLabel: string
 }
-export const Justification = ({ valueJustification, inputRevalidate, textLabel }: PropsJustification) => {
+export const Justification = ({ valueJustification, inputRevalidate }: PropsJustification) => {
     const { control, register, trigger } = useFormContext<UpdateSwabType>();
 
     const { errors } = useFormState({
@@ -40,13 +39,13 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel }
 
     useEffect(() => {
         trigger(valueJustification)
-    },[])
+    }, [])
 
     return (
         <Popover.Root positioning={{ placement: "bottom-start" }}>
             <Popover.Trigger asChild>
-                <Button variant={"outline"} size={"xs"}>
-                    <Tooltip content={!value ? 'Defina sua justificativa' : 'Editar Justificativa'}>
+                <Tooltip content={!value ? 'Defina sua justificativa' : 'Editar Justificativa'}>
+                    <Button variant={"outline"} size={"xs"}>
                         {!value ? (
                             <Icon asChild size={"md"}>
                                 < RiErrorWarningLine color="orange" />
@@ -58,18 +57,15 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel }
                                 </Icon>
                             )
                         }
-                    </Tooltip>
-                </Button>
+                    </Button>
+                </Tooltip>
             </Popover.Trigger>
             <Portal>
                 <Popover.Positioner>
                     <Popover.Content>
                         <Popover.Arrow />
                         <Popover.Body>
-                            <FormField
-                                label={textLabel}
-                                error={errors?.[valueJustification]?.message}
-                            >
+                            <FormField isRequired error={errors?.[valueJustification]?.message}>
                                 <Textarea
                                     {...register(`${valueJustification}`, {
                                         deps: [inputRevalidate]

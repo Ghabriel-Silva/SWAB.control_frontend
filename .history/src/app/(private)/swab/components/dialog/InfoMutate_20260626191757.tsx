@@ -7,7 +7,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { updateSwabSchema, UpdateSwabType } from "../../validations/update.swab.schema";
 import { SwabCheckType } from "@/app/(private)/types/swab";
 import { useEffect } from "react";
-import { ATP_REQUIRED_TYPES } from "../../types/atp.required.types";
 
 
 export const InfoMutate = ({ swab }: SwabDataProps) => {
@@ -59,10 +58,9 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
     const performedType = useWatch({
         control,
         compute: (data: UpdateSwabType) => {
-            return !ATP_REQUIRED_TYPES.includes(data.performedType)
+            if({})
         }
     })
-    
 
     const OnSubmit = (data: UpdateSwabType) => {
         console.log(data)

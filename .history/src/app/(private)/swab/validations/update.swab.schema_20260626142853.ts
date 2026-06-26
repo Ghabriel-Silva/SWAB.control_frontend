@@ -1,6 +1,10 @@
 import * as yup from 'yup'
 import { SwabCheckResult, SwabCheckType } from '../../types/swab'
-import { ATP_REQUIRED_TYPES } from '../types/atp.required.types';
+
+const ATP_REQUIRED_TYPES = [
+    SwabCheckType.ATP,
+    SwabCheckType.MICRO
+]
 
 export const updateSwabSchema = yup.object({
     validatedAt: yup
@@ -96,9 +100,6 @@ export const updateSwabSchema = yup.object({
         .max(500, 'O campo observações deve conter no máximo 500 caracteres')
         .notRequired()
         .trim()
-         .transform((value) => {
-            return value.trim() === '' ? null : value
-        })
         .when('result', {
             is: (value: SwabCheckResult) =>
                 value === SwabCheckResult.REPROVED,
@@ -108,9 +109,6 @@ export const updateSwabSchema = yup.object({
     sameFaucetJustification: yup
         .string()
         .max(250, 'O maximo de caracteres é 250')
-        .transform((value) => {
-            return value.trim() === '' ? null : value
-        })
         .trim()
         .test(
             'has-Value-in-input',
@@ -125,6 +123,9 @@ export const updateSwabSchema = yup.object({
         .string()
         .max(250, 'O maximo de caracteres é 250')
         .trim()
+        .transform((_, originalValue) => {
+            if (typeof originalValue !== 'string') return null
+        })
         .test(
             'has-Value-in-input',
             'Justifique a mudança de Swab',

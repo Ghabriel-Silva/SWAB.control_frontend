@@ -40,6 +40,7 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel }
 
     useEffect(() => {
         trigger(valueJustification)
+        
     },[])
 
     return (

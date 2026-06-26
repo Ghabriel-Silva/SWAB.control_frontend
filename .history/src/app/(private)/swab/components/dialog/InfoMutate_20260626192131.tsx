@@ -62,7 +62,6 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
             return !ATP_REQUIRED_TYPES.includes(data.performedType)
         }
     })
-    
 
     const OnSubmit = (data: UpdateSwabType) => {
         console.log(data)

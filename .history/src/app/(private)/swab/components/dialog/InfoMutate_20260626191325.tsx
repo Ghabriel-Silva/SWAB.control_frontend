@@ -58,11 +58,9 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
 
     const performedType = useWatch({
         control,
-        compute: (data: UpdateSwabType) => {
-            return !ATP_REQUIRED_TYPES.includes(data.performedType)
-        }
+        compute: (data: UpdateSwabType) =>
+            ATP_REQUIRED_TYPES.includes(!swab.check.type)
     })
-    
 
     const OnSubmit = (data: UpdateSwabType) => {
         console.log(data)

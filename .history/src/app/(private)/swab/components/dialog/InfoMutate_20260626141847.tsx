@@ -7,13 +7,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { updateSwabSchema, UpdateSwabType } from "../../validations/update.swab.schema";
 import { SwabCheckType } from "@/app/(private)/types/swab";
 import { useEffect } from "react";
-import { ATP_REQUIRED_TYPES } from "../../types/atp.required.types";
 
 
 export const InfoMutate = ({ swab }: SwabDataProps) => {
     const methods = useForm({
         resolver: yupResolver(updateSwabSchema),
-        mode: 'onChange',
+        mode: 'all',
         context: {
             lastFaucetLocation: swab.lastFaucetLocation,
             typeSwabBD: swab.check.type
@@ -58,11 +57,9 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
 
     const performedType = useWatch({
         control,
-        compute: (data: UpdateSwabType) => {
-            return !ATP_REQUIRED_TYPES.includes(data.performedType)
-        }
+        compute: (data: UpdateSwabType) =>
+            data.performedType !== swab.check.type
     })
-    
 
     const OnSubmit = (data: UpdateSwabType) => {
         console.log(data)
@@ -124,7 +121,7 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
                             })} />
                             {isSameFaucet && (
                                 <Justification
-                                    textLabel="Motivo uso mesma torneira:"
+                                    textLabel="Motivo uso mesma torneira: "
                                     valueJustification="sameFaucetJustification"
                                     inputRevalidate="faucetCode"
                                 />

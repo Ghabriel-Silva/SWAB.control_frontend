@@ -11,8 +11,6 @@ import { RiEditBoxLine, RiErrorWarningLine } from "react-icons/ri";
 import { UpdateSwabType } from "../../validations/update.swab.schema";
 import { FormField } from "@/app/(private)/components";
 import { useEffect } from "react";
-import { Tooltip } from "@/components/ui/tooltip"
-
 
 
 const MAX_CHARACTERS = 250
@@ -22,9 +20,8 @@ type valueToRevalidate = keyof UpdateSwabType
 interface PropsJustification {
     valueJustification: justification
     inputRevalidate: valueToRevalidate
-    textLabel: string
 }
-export const Justification = ({ valueJustification, inputRevalidate, textLabel }: PropsJustification) => {
+export const Justification = ({ valueJustification, inputRevalidate }: PropsJustification) => {
     const { control, register, trigger } = useFormContext<UpdateSwabType>();
 
     const { errors } = useFormState({
@@ -40,25 +37,23 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel }
 
     useEffect(() => {
         trigger(valueJustification)
-    },[])
+    }, [])
 
     return (
         <Popover.Root positioning={{ placement: "bottom-start" }}>
             <Popover.Trigger asChild>
                 <Button variant={"outline"} size={"xs"}>
-                    <Tooltip content={!value ? 'Defina sua justificativa' : 'Editar Justificativa'}>
-                        {!value ? (
-                            <Icon asChild size={"md"}>
-                                < RiErrorWarningLine color="orange" />
+                    {!value ? (
+                        <Icon asChild size={"md"}>
+                            < RiErrorWarningLine color="yellow" />
+                        </Icon>
+                    ) :
+                        (
+                            <Icon asChild >
+                                <RiEditBoxLine color="green" />
                             </Icon>
-                        ) :
-                            (
-                                <Icon asChild >
-                                    <RiEditBoxLine color="green" />
-                                </Icon>
-                            )
-                        }
-                    </Tooltip>
+                        )
+                    }
                 </Button>
             </Popover.Trigger>
             <Portal>
@@ -66,10 +61,7 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel }
                     <Popover.Content>
                         <Popover.Arrow />
                         <Popover.Body>
-                            <FormField
-                                label={textLabel}
-                                error={errors?.[valueJustification]?.message}
-                            >
+                            <FormField isRequired error={errors?.[valueJustification]?.message}>
                                 <Textarea
                                     {...register(`${valueJustification}`, {
                                         deps: [inputRevalidate]

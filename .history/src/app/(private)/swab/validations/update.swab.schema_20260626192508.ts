@@ -116,6 +116,7 @@ export const updateSwabSchema = yup.object({
             'has-Value-in-input',
             'Justifique o uso da mesma torneira',
             (value) => {
+                if (!value) return true
                 return (value?.trim().length ?? 0) > 0
             }
         )

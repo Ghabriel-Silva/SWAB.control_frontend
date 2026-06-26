@@ -23,7 +23,7 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
                 ? new Date(swab.createdAt)
                 : new Date(swab.check.validatedAt),
             result: swab.check.result,
-            performedType: swab.check.type,
+            performedType: swab.check.type,     
         }
     })
 
@@ -58,11 +58,13 @@ export const InfoMutate = ({ swab }: SwabDataProps) => {
 
     const performedType = useWatch({
         control,
-        compute: (data: UpdateSwabType) => {
-            return !ATP_REQUIRED_TYPES.includes(data.performedType)
+        compute: (data: UpdateSwabType) =>{
+            if(ATP_REQUIRED_TYPES.includes(data.performedType)){
+                
+            }
         }
+        
     })
-    
 
     const OnSubmit = (data: UpdateSwabType) => {
         console.log(data)

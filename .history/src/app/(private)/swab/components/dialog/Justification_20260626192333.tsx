@@ -40,7 +40,7 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel }
 
     useEffect(() => {
         trigger(valueJustification)
-    },[])
+    },[valueJustification, tri])
 
     return (
         <Popover.Root positioning={{ placement: "bottom-start" }}>

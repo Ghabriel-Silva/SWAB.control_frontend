@@ -40,7 +40,7 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel }
 
     useEffect(() => {
         trigger(valueJustification)
-    },[])
+    }, [])
 
     return (
         <Popover.Root positioning={{ placement: "bottom-start" }}>
@@ -67,7 +67,8 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel }
                         <Popover.Arrow />
                         <Popover.Body>
                             <FormField
-                                label={textLabel}
+                                label={text}
+                                isRequired
                                 error={errors?.[valueJustification]?.message}
                             >
                                 <Textarea

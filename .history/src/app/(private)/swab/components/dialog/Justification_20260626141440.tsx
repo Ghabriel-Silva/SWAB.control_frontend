@@ -22,9 +22,9 @@ type valueToRevalidate = keyof UpdateSwabType
 interface PropsJustification {
     valueJustification: justification
     inputRevalidate: valueToRevalidate
-    textLabel: string
+    textLable: string
 }
-export const Justification = ({ valueJustification, inputRevalidate, textLabel }: PropsJustification) => {
+export const Justification = ({ valueJustification, inputRevalidate, textLable }: PropsJustification) => {
     const { control, register, trigger } = useFormContext<UpdateSwabType>();
 
     const { errors } = useFormState({
@@ -40,7 +40,7 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel }
 
     useEffect(() => {
         trigger(valueJustification)
-    },[])
+    }, [])
 
     return (
         <Popover.Root positioning={{ placement: "bottom-start" }}>
@@ -67,7 +67,8 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel }
                         <Popover.Arrow />
                         <Popover.Body>
                             <FormField
-                                label={textLabel}
+                                label={}
+                                isRequired
                                 error={errors?.[valueJustification]?.message}
                             >
                                 <Textarea
