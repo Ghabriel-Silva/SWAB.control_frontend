@@ -1,0 +1,5 @@
+
+
+const ConsultPage = () => {
+    return swB
+}

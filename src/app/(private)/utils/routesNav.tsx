@@ -1,0 +1,71 @@
+import { Role } from "@/permissions/roles";
+
+
+import {
+    FiHome,
+    FiActivity,
+    FiUsers,
+    FiUserCheck,
+    FiFilter,
+    FiBarChart2,
+    FiSettings,
+} from "react-icons/fi";
+import { GiWaterTank } from "react-icons/gi";
+import { RoutesNavType } from "../types/routes";
+
+export const items: RoutesNavType[] = [
+    {
+        label: "Início",
+        href: "/home",
+        icon: <FiHome />,
+    },
+
+    {
+        label: "Swab",
+        href: "/swab",
+        roles: [Role.LAB, Role.ADMIN, Role.OWNER],
+        icon: <FiActivity />,
+    },
+    {
+        label: "Consultar Swab ",
+        href: "/swab/consult",
+        roles: [Role.LAB, Role.ADMIN, Role.OWNER],
+        icon: <FiFilter />,
+    },
+
+
+    {
+        label: "Tanques e Silos",
+        href: "/tanques",
+        roles: [Role.LAB, Role.ADMIN, Role.OWNER],
+        icon: < GiWaterTank />,
+    },
+
+    {
+        label: "Operadores",
+        href: "/operadores",
+        roles: [Role.ADMIN, Role.OWNER],
+        icon: <FiUserCheck />,
+    },
+
+    {
+        label: "Gestores",
+        href: "/gestores",
+        roles: [Role.OWNER],
+        icon: <FiUsers />,
+    },
+
+    {
+        label: "Métricas",
+        href: "/metricas",
+        roles: [Role.ADMIN, Role.OWNER],
+        icon: <FiBarChart2 />,
+    },
+
+    {
+        label: "Configurações",
+        href: "/configuracoes",
+        roles: [Role.ADMIN, Role.OWNER],
+        icon: <FiSettings />,
+    },
+];

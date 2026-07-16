@@ -1,6 +1,0 @@
-
-
-
-const useGetData(){
-    return useQ
-}
