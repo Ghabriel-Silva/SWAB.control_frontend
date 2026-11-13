@@ -2,9 +2,9 @@
 
 import { Box, Flex, HStack } from "@chakra-ui/react";
 
-import { TextImage } from "./components/TextImage";
 import { ImageLogin } from "./components/ImageLogin";
 import { FormContainer } from "./components/FormContainer";
+import { TextImage } from "./components/TextImage";
 
 export default function LoginPage() {
     return (

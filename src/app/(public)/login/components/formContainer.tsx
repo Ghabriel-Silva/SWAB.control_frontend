@@ -1,3 +1,4 @@
+"use client";
 
 import { Box, Heading, Button, Input, Text, Field, Stack, HStack, Link } from "@chakra-ui/react";
 import { PasswordInput } from "@/components/ui/password-input"
@@ -15,9 +16,9 @@ import { loginService } from "../services/auth.service";
 export const FormContainer = () => {
     const [loading, setLoading] = useState(false)
     const message: string = "Olá! Preciso de ajuda para entrar no Sistema."
-    const url: string =
-        `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
 
+    const numero = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+    const url: string = `https://wa.me/${numero}?text=${encodeURIComponent(message)}`
     const router = useRouter()
     const {
         register,
@@ -75,7 +76,11 @@ export const FormContainer = () => {
             <Heading size="2xl" mb={6} textAlign="center">
                 Login
             </Heading>
-            <form noValidate onSubmit={handleSubmit(onSubmite)}>
+            <form
+                method="post"
+                noValidate
+                onSubmit={handleSubmit(onSubmite)}
+            >
                 <Stack mb={2} >
                     <Box mb={4}>
                         <Field.Root invalid={!!errors.email} required >

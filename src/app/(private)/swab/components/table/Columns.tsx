@@ -6,8 +6,10 @@ import {
 } from "@mui/x-data-grid";
 import { SwabGridRow } from "@/app/(private)/swab/types/swab.data-grid";
 import { SwabCheckResult, SwabCheckType } from "@/app/(private)/types/swab";
-import { TypeSwab, Result, IsCancelled, DialogContainer, ContainerRow } from "@/app/(private)/swab/components/index";
+import { TypeSwab, Result, IsCancelled, DialogContainer, ContainerRow, FloatingJustification } from "@/app/(private)/swab/components/index";
 import { defaultValue } from "../../utils/defaultValue";
+import { HStack } from "@chakra-ui/react";
+import { CancelSwabDialog } from "../dialog/CancelSwabDialog";
 
 
 
@@ -60,7 +62,22 @@ export const columns: GridColDef<SwabGridRow>[] = [
         field: "location",
         headerName: "Tank/Silo",
         flex: 1,
-        minWidth: 50,
+        minWidth: 100,
+        renderCell: (params: GridRenderCellParams<SwabGridRow, string>) => {
+            return (
+                <HStack justifyContent={'space-between'}>
+                    <p>{params.value} </p>
+                    <FloatingJustification
+                        location={params.row.location}
+                        title={`Obs. Ultima reprovação ${params.row.location}`}
+                        text={params.row.justificationLastReprovation ?? ''}
+                        isPeding={params.row.resultSwab}
+                        swabCancelled={params.row.isCancelledSwab}
+
+                    />
+                </HStack>
+            )
+        }
     },
     {
         field: "lastFauct",
@@ -147,5 +164,16 @@ export const columns: GridColDef<SwabGridRow>[] = [
             )
         }
 
+    },
+    {
+        field: "cancelSwab",
+        headerName: "Ações",
+        width: 80,
+        sortable: false,
+        filterable: false,
+        disableExport: true,
+        align: "center",
+        headerAlign: "center",
+        renderCell: ({ row }) => <CancelSwabDialog row={row} />,
     },
 ];

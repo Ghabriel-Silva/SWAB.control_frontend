@@ -59,9 +59,10 @@ export function DialogContainer({ row }: DialogContainerProps) {
 
                         <Dialog.Footer display={isLoadingSwab ? 'none' : 'flex'}>
                             <Dialog.ActionTrigger asChild>
-                                <Button variant="outline" >Cancelar</Button>
+                                <Button variant="outline">Cancelar</Button>
                             </Dialog.ActionTrigger>
                             <Button
+                                disabled={row.isCancelledSwab}
                                 onClick={() => formRef.current?.requestSubmit()}
                             >Salvar</Button>
                         </Dialog.Footer>

@@ -20,7 +20,7 @@ const formatter = new DateFormatter("pt-BR", {
 })
 
 
-export const Calendar = () => {
+export const Calendar = ({ disabled = false }: { disabled?: boolean }) => {
     const { control } = useFormContext<UpdateSwabType>()
     return (
         <Controller
@@ -33,7 +33,9 @@ export const Calendar = () => {
                         field.value.getMonth() + 1,
                         field.value.getDate(),
                         field.value.getHours(),
-                        field.value.getMinutes()
+                        field.value.getMinutes(),
+                        field.value.getSeconds(),
+                        field.value.getMilliseconds()
                     )]
                     : []
 
@@ -50,15 +52,9 @@ export const Calendar = () => {
 
                     const prev = field.value ?? new Date()
 
-                    field.onChange(
-                        new Date(
-                            newDate.year,
-                            newDate.month - 1,
-                            newDate.day,
-                            prev.getHours(),
-                            prev.getMinutes()
-                        )
-                    )
+                    const next = new Date(prev)
+                    next.setFullYear(newDate.year, newDate.month - 1, newDate.day)
+                    field.onChange(next)
                 }
 
                 const onTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +71,7 @@ export const Calendar = () => {
 
                 return (
                     <DatePicker.Root
+                        disabled={disabled}
                         maxWidth="20rem"
                          size={"xs"}
                         variant={"outline"}
@@ -101,6 +98,7 @@ export const Calendar = () => {
                                         <Input
 
                                             type="time"
+                                            disabled={disabled}
                                             value={timeValue}
                                             onChange={onTimeChange}
                                         />

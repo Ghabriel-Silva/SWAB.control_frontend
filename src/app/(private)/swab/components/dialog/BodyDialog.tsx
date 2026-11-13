@@ -32,7 +32,7 @@ export function BodyDialog({ row, setIsLoadingFn, onSuccess, formRef }: DialogCo
                 />
             )}
             {!isLoading && swab && (
-                <VStack gap={2} >
+                <VStack gap={2}>
                     <InfoStatic swab={swab} />
                     <InfoMutate formRef={formRef} onSuccess={onSuccess} swab={swab} />
                 </VStack>

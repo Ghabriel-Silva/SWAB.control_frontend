@@ -5,88 +5,61 @@ import { useGetSwab } from "../hooks/useGetData";
 import { SwabTable } from "./table/SwabTable";
 import { toaster } from "@/components/ui/toaster";
 import { SwabGridRow } from "../types/swab.data-grid";
-import { Badge, Box, Flex } from "@chakra-ui/react";
+import { Badge, Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { ContainerCreate } from "@/app/(private)/swab/components";
 import {
     FullScreenLoading,
     SubtitleText,
 } from "@/app/(private)/components";
 
-import {
-    usePathname,
-    useRouter,
-    useSearchParams,
-} from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { FilterSwab } from "../consult/components/FilterSwab";
 import { GetSwabsParams } from "../types/get.swab.params";
-import { SwabCheckResult, SwabCheckType } from "../../types/swab";
+import { SwabCheckResult } from "../../types/swab";
+import { getDefaultDateRange } from "../consult/utils/getDefaultDateRange";
+import { filterSwabSchema } from "../consult/validations/filter.swab.schema";
 
 
 interface PropsSwabClient {
     hasFilter?: boolean
     filterDinamic?: {
-        result?: string
+        result?: SwabCheckResult
     }
 }
 export default function SwabClient({ hasFilter = false, filterDinamic }: PropsSwabClient) {
 
-    const router = useRouter()
-    const searchParams = useSearchParams()
-    const pathname = usePathname()
+    const searchParams = useSearchParams();
+    const isDesktop = useBreakpointValue({ base: false, lg: true }) ?? false;
 
-    const paramsFilter: GetSwabsParams = {
-        // locationId: "d511f83d-5139-11f1-bb46-40c2bae13fc2",
-        // operatorId: "22222222-2222-2222-2222-222222222222",
-        result: SwabCheckResult.REPROVED,
-        // internalCode: "SW26060048",
-        // type: SwabCheckType.ATP,
-        // startDate: "2026-05-21",
-        // endDate: "2026-05-24",
-        // isCancelled: true,
-        page: 1,
-        limit: 20,
+    const urlFilters = filterSwabSchema.cast(
+        Object.fromEntries(searchParams),
+        { stripUnknown: true }
+    )
+    const defaultDates = getDefaultDateRange()
+
+    const formValues = {
+        ...urlFilters,
+        startDate: searchParams.get("startDate") ?? defaultDates.startDate,
+        endDate: searchParams.get("endDate") ?? defaultDates.endDate,
     }
-
-
-
-    useEffect(() => {
-        const params = new URLSearchParams(searchParams.toString())
-        let changed = false
-
-        Object.entries(paramsFilter ?? {}).forEach(([key, value]) => {
-            if (!params.has(key)) {
-                params.set(key, value)
-                changed = true
-            }
-        })
-
-        console.log(params)
-        if (changed) {
-            router.replace(`${pathname}?${params.toString()}`);
-        }
-    }, [router, searchParams, paramsFilter]);
+    const order = searchParams.get("order")
 
     const filters: GetSwabsParams = {
-        result: searchParams.get("result") ?? undefined,
-        type: searchParams.get('type') ?? undefined,
-        operatorId: searchParams.get('operatorId') ?? undefined,
-        isCancelled: searchParams.get("isCancelled")
-            ? searchParams.get("isCancelled") === "true"
-            : undefined,
-        internalCode: searchParams.get('internalCode') ?? undefined,
-        locationId: searchParams.get('locationId') ?? undefined,
-        endDate: searchParams.get('endDate') ?? undefined,
-        startDate: searchParams.get('startDate') ?? undefined,
-        limit: Number(searchParams.get('limit') ?? undefined),
-        page: Number(searchParams.get('page') ?? undefined),
-    }
-    // const result = searchParams.get("result") ?? "PENDING"
+        ...urlFilters,
+        performedType: urlFilters.performedType || undefined,
+        result: urlFilters.result || (
+            hasFilter ? undefined : filterDinamic?.result ?? SwabCheckResult.PENDING
+        ),
 
-    // const page = Number(searchParams.get("page") ?? 1);
-    // const rawLimit = Number(searchParams.get("limit") ?? 20)
-    // const limit = Math.min(rawLimit, 100)
+        isCancelled: urlFilters.isCancelled === ""
+            ? (hasFilter ? undefined : false)
+            : urlFilters.isCancelled === "true",
+        limit: Number(searchParams.get("limit") ?? 20),
+        page: Number(searchParams.get("page") ?? 1),
+        order: order === "ASC" || order === "DESC" ? order : undefined,
+    };
 
-    const { data, isLoading, isError, error } = useGetSwab(filters);
+    const { data, isLoading, isFetching, isError, error } = useGetSwab(filters);
 
     useEffect(() => {
         if (isError) {
@@ -100,7 +73,7 @@ export default function SwabClient({ hasFilter = false, filterDinamic }: PropsSw
         }
     }, [isError, error]);
 
-    if (isLoading && !data) {
+    if (isLoading && !data && !hasFilter) {
         return <FullScreenLoading />
     }
 
@@ -119,12 +92,20 @@ export default function SwabClient({ hasFilter = false, filterDinamic }: PropsSw
             resultSwab: item.check.result,
             valueAtp: item.check.valueAtp,
             operator: item.operator?.name ?? null,
+            justificationLastReprovation: item.check?.justificationLastReprovation ?? null
         })) ?? []
 
     return (
-        <Flex flexDirection="column" gap={4} height="100%">
+        <Flex flexDirection="column" gap={4} height="100%" overflowY="auto">
             {hasFilter ? (
-                <FilterSwab />
+                <FilterSwab
+                    key={JSON.stringify(formValues)}
+                    values={formValues}
+                    alwaysOpen={isDesktop}
+                    locations={[]}
+                    locationsError="Locais indisponíveis no momento."
+                    loading={isFetching}
+                />
             )
                 :
                 (
@@ -132,12 +113,12 @@ export default function SwabClient({ hasFilter = false, filterDinamic }: PropsSw
                 )}
             <Box
                 flex={1}
-                minH={0}
+                minH={hasFilter ? "320px" : 0}
                 display="flex"
                 flexDirection="column"
             >
                 <SubtitleText textTransform="uppercase" pb={2}>
-                    Em andamento:
+                    {hasFilter ? "Registros SWAB:" : "Em andamento:"}
                     <Badge colorPalette="green" ml={1}>
                         {data?.meta.total}
                     </Badge>
@@ -145,8 +126,14 @@ export default function SwabClient({ hasFilter = false, filterDinamic }: PropsSw
 
                 <SwabTable
                     rows={rows}
-                    loading={isLoading}
-                    dataMeta={data!.meta}
+                    loading={isFetching}
+                    dataMeta={{
+                        page: filters.page ?? 1,
+                        limit: filters.limit ?? 20,
+                        total: data?.meta.total ?? 0,
+                        totalPages: data?.meta.totalPages ?? 0,
+                    }}
+                    hasFilter={hasFilter}
                 />
             </Box>
         </Flex>

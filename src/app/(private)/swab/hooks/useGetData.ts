@@ -1,12 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
-import { SwabApiItem, SwabResponse } from "../types/swab.response";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { SwabApiItem} from "../types/swab.response";
 import { swabService } from "../service/swab.service";
 import { GetSwabsParams } from "../types/get.swab.params";
+import { ApiResponse } from "@/app/shared/types/api.response";
+
 
 export function useGetSwab(filters: GetSwabsParams) {
-    return useQuery<SwabResponse<SwabApiItem[]>>({
+    return useQuery<ApiResponse<SwabApiItem[]>>({
         queryKey: ["swab", filters],
-        queryFn: () => swabService(filters),
+        queryFn: ({ signal }) => swabService(filters, signal),
+        retry: false,
+        placeholderData: keepPreviousData,
         refetchInterval: 5_0000,
     })
 }

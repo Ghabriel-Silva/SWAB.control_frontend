@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react"
 import { useFormContext, useFormState, useWatch } from "react-hook-form";
 import { RiEditBoxLine, RiErrorWarningLine } from "react-icons/ri";
-import { UpdateSwabType } from "../../validations/update.swab.schema";
+import { updateSwabSchema, UpdateSwabType } from "../../validations/update.swab.schema";
 import { FormField } from "@/app/(private)/components";
 import { useEffect } from "react";
 import { Tooltip } from "@/components/ui/tooltip"
@@ -20,11 +20,12 @@ const MAX_CHARACTERS = 250
 type justification = 'sameFaucetJustification' | 'updateSwabJustification'
 type valueToRevalidate = keyof UpdateSwabType
 interface PropsJustification {
+    disabled?: boolean
     valueJustification: justification
     inputRevalidate: valueToRevalidate
     textLabel: string
 }
-export const Justification = ({ valueJustification, inputRevalidate, textLabel }: PropsJustification) => {
+export const Justification = ({ valueJustification, inputRevalidate, textLabel, disabled = false }: PropsJustification) => {
     const { control, register, trigger } = useFormContext<UpdateSwabType>();
 
     const { errors } = useFormState({
@@ -41,13 +42,13 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel }
 
 
     useEffect(() => {
-        trigger(valueJustification)
-    }, [trigger, valueJustification, value])
+        if (!disabled) trigger(valueJustification)
+    }, [trigger, valueJustification, value, disabled])
 
     return (
         <Popover.Root positioning={{ placement: "bottom-start" }}>
             <Popover.Trigger asChild>
-                <Button variant={"outline"} size={"xs"}>
+                <Button disabled={disabled} variant={"outline"} size={"xs"}>
                     <Tooltip
                         content={
                             hasValue
@@ -74,13 +75,14 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel }
                     <Popover.Content>
                         <Popover.Arrow />
                         <Popover.Body>
-                            <FormField
+                            <FormField disabled={disabled}
                                 label={textLabel}
                                 error={errors?.[valueJustification]?.message}
                             >
                                 <Textarea
                                     {...register(`${valueJustification}`, {
-                                        deps: [inputRevalidate]
+                                        deps: [inputRevalidate],
+                                        setValueAs: (value: unknown) => updateSwabSchema.fields[valueJustification].cast(value)
                                     })}
                                     placeholder="Escreva a justificativa"
                                     maxLength={MAX_CHARACTERS}

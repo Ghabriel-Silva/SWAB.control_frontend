@@ -15,4 +15,5 @@ export interface SwabGridRow {
   resultSwab: SwabCheckResult;
   valueAtp: number | null;
   operator: string | null;
+  justificationLastReprovation: string | null
 }

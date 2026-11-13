@@ -1,11 +1,11 @@
-import { Button, GridItem, HStack, Input, SimpleGrid, Textarea } from "@chakra-ui/react"
+import { GridItem, HStack, Input, SimpleGrid, Textarea } from "@chakra-ui/react"
 import { FormProvider, useForm, useWatch } from "react-hook-form"
 import { Calendar, OperatorSelect, ResultSelect, Justification, TypeSwabSelect } from "@/app/(private)/swab/components/index";
-import { FormField } from "@/app/(private)/components";
+import { FormField, SubtitleText } from "@/app/(private)/components";
 import { SwabDataProps } from "../../types/swab.dataProps";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { updateSwabSchema, UpdateSwabType } from "../../validations/update.swab.schema";
-import { SwabCheckType } from "@/app/(private)/types/swab";
+import { SwabCheckResult, SwabCheckType } from "@/app/(private)/types/swab";
 import { useEffect } from "react";
 import { ATP_REQUIRED_TYPES } from "../../types/atp.required.types";
 import { useUpdateSwab } from "../../hooks/useUpdateSwab";
@@ -14,6 +14,8 @@ import { toaster } from "@/components/ui/toaster";
 
 
 export const InfoMutate = ({ swab, onSuccess, formRef }: SwabDataProps) => {
+    const isCancelled = swab.isCancelled
+    const isInitialVisual = !isCancelled && swab.check.type === SwabCheckType.VISUAL
     const methods = useForm({
         resolver: yupResolver(updateSwabSchema),
         mode: 'onChange',
@@ -28,20 +30,28 @@ export const InfoMutate = ({ swab, onSuccess, formRef }: SwabDataProps) => {
             result: swab.check.result,
             performedType: swab.check.type,
             faucetCode: !swab.faucetCode ? "" : swab.faucetCode,
-            sameFaucetJustification: !swab.check.sameFaucetJustification
+            sameFaucetJustification: !isCancelled && swab.faucetCode !== swab.lastFaucetLocation
                 ? null
-                : swab.check.sameFaucetJustification,
-            updateSwabJustification: !swab.check.updateSwabJustification
-                ? null
-                : swab.check.updateSwabJustification,
+                : (swab.check.sameFaucetJustification?.trim() || null),
+            updateSwabJustification: swab.check.updateSwabJustification?.trim() || null,
             operatorId: swab.operator?.id ?? '',
-            batch: !swab.batch ? null : swab.batch,
-            valueAtp: !swab.check.valueAtp ? null : swab.check.valueAtp,
-            observation: !swab.check.observation ? undefined : swab.check.observation
+            batch: isInitialVisual ? null : swab.batch || null,
+            valueAtp: isInitialVisual || swab.check.valueAtp == null
+                ? null
+                : Number(swab.check.valueAtp),
+            observation: swab.check.observation ?? ""
         }
     })
 
-    const { resetField, register, handleSubmit, control, formState: { errors }, setValue } = methods
+    const {
+        reset,
+        resetField,
+        register,
+        handleSubmit,
+        control,
+        formState: { errors, isDirty },
+        setValue,
+    } = methods
 
     const isVisual = useWatch({
         control,
@@ -49,108 +59,131 @@ export const InfoMutate = ({ swab, onSuccess, formRef }: SwabDataProps) => {
             data.performedType === SwabCheckType.VISUAL,
     })
 
-    //Se a torneira for igual a  ultima utiliza retorno true para rederiza o componente justification se a torneira é diferente da ultima torneira(por exemplo o usuário mudou a torneira) e eu tenho uma justificativa sobre a troca da torneira que só acontece se a torneira for igual a anterior, ai eu seto o valor da justificativa para null e retorno false para o componente justification 
     const isSameFaucet = useWatch({
         control,
-        compute: (data: UpdateSwabType) => {
-            if (data.faucetCode === swab.lastFaucetLocation) {
-                return true
-            } else if (data.faucetCode !== swab.lastFaucetLocation && data.sameFaucetJustification) {
-                setValue('sameFaucetJustification', null)
-                return false
-            }
-        }
-
+        compute: (data: UpdateSwabType) =>
+            data.faucetCode === swab.lastFaucetLocation,
     })
 
-    //se existe um lastType oque significa que ouve mudança de swab então showUpdateJustification sera true agora, se não existir eu valido normalmentre
+    const originalType = swab.check.lastType ?? swab.check.type
+
     const showUpdateJustification = useWatch({
         control,
-        compute: (data: UpdateSwabType) => {
-            if (swab.check.lastType) {
-                return true
-            }
-            else {
-                return ATP_REQUIRED_TYPES.includes(swab.check.lastType ?? swab.check.type) &&
-                    data.performedType === SwabCheckType.VISUAL
-            }
-        }
+        compute: (data: UpdateSwabType) =>
+            ATP_REQUIRED_TYPES.includes(originalType) &&
+            data.performedType === SwabCheckType.VISUAL,
     })
-
     const isDisableSelectType = !!swab.check.type && !!swab.check.lastType
 
 
     // ira limpar o valueAtp e batch quando muda para VISUAL
     useEffect(() => {
-        if (isVisual) {
+        if (isVisual && !isCancelled) {
             setValue('batch', null, { shouldValidate: true })
             setValue('valueAtp', null, { shouldValidate: true })
         }
-    }, [isVisual, setValue])
+    }, [isVisual, isCancelled, setValue])
 
     // limpa justificativa de mudança de swab quando some o componente
     useEffect(() => {
-        if (!showUpdateJustification) {
+        if (!showUpdateJustification && !isCancelled) {
             resetField("updateSwabJustification")
         }
-    }, [showUpdateJustification, resetField])
+    }, [showUpdateJustification, isCancelled, resetField])
 
     // limpa justificativa de torneira quando some o componente
     useEffect(() => {
-        if (!isSameFaucet) {
-            resetField("sameFaucetJustification")
+        if (!isSameFaucet && !isCancelled) {
+            setValue("sameFaucetJustification", null, { shouldValidate: true })
         }
-    }, [isSameFaucet, resetField])
+    }, [isSameFaucet, isCancelled, setValue])
 
     const id = swab.id
 
 
-    const { mutate, isPending } = useUpdateSwab()
+    const { mutateAsync } = useUpdateSwab()
     const OnSubmit = (data: UpdateSwabType) => {
-        console.log(data)
+        if (isCancelled) return
+
+        if (!isDirty) {
+            onSuccess?.()
+            return
+        }
+
         const dataToUpdate: UpdateSwabParams = {
             data,
             id
         }
-        mutate(dataToUpdate, {
-            onError: (error) => {
-                toaster.create({
-                    title: 'Erro',
-                    description: error.message || 'Não foi possivel atualizar o Swab',
-                    type: "error",
-                    duration: 4000,
-                    closable: true
-                })
-            },
-            onSuccess: (data) => {
+        const request = mutateAsync(dataToUpdate, {
+            onSuccess: () => {
+                reset(
+                    { ...data, observation: data.observation ?? "" },
+                    { keepFieldsRef: true }
+                )
                 onSuccess?.()
-                toaster.create({
-                    title: 'Sucesso',
-                    description: data.message,
-                    type: "success",
-                    duration: 4000,
-                    closable: true
-                })
             }
         })
+
+        toaster.promise(request, {
+            loading: {
+                title: "Atualizando SWAB...",
+                description: "Aguarde enquanto as alterações são salvas.",
+            },
+            success: (response) => ({
+                title: "Sucesso",
+                description: response.message || "SWAB atualizado com sucesso",
+                duration: 4000,
+                closable: true,
+            }),
+            error: (error: unknown) => ({
+                title: "Erro",
+                description: error instanceof Error
+                    ? error.message
+                    : "Não foi possível atualizar o SWAB",
+                duration: 4000,
+                closable: true,
+            }),
+        })
     }
+    const swabIsAproved = swab.check.result === SwabCheckResult.APPROVED
+
     return (
         <FormProvider {...methods}>
-            <form ref={formRef} onSubmit={handleSubmit(OnSubmit)} noValidate>
+            <form
+                ref={formRef}
+                noValidate
+                onSubmit={(event) => {
+                    event.preventDefault()
+
+                    if (isCancelled) return
+
+                    if (!isDirty) {
+                        onSuccess?.()
+                        return
+                    }
+
+                    void handleSubmit(OnSubmit)(event)
+                }}
+            >
                 <SimpleGrid
                     border={"1px solid"}
                     borderColor={"gray.200"}
-                    p={4}
+                    p={2}
                     borderRadius={"sm"}
                     columns={{ base: 2, md: 2, lg: 3 }}
                     gap={4}
                     w="100%"
                 >
-                    <FormField label="Tipo Swab" error={errors.performedType?.message}>
+                    <GridItem gridColumn="1 / -1">
+                        <SubtitleText fontWeight="medium" textTransform="uppercase">
+                            Dados da análise
+                        </SubtitleText>
+                    </GridItem>
+                    <FormField disabled={isCancelled} label="Tipo Swab" error={errors.performedType?.message}>
                         <HStack>
-                            <TypeSwabSelect value={isDisableSelectType} />
+                            <TypeSwabSelect value={isCancelled || isDisableSelectType || swabIsAproved} />
                             {showUpdateJustification && (
-                                <Justification
+                                <Justification disabled={isCancelled}
                                     textLabel="Justificativa mudança de Swab: "
                                     valueJustification="updateSwabJustification"
                                     inputRevalidate="performedType"
@@ -159,15 +192,15 @@ export const InfoMutate = ({ swab, onSuccess, formRef }: SwabDataProps) => {
                         </HStack>
                     </FormField>
 
-                    <FormField label="Realização" error={errors.validatedAt?.message}>
-                        <Calendar />
+                    <FormField disabled={isCancelled} label="Realização" error={errors.validatedAt?.message}>
+                        <Calendar disabled={isCancelled} />
                     </FormField>
 
-                    <FormField label="Resultado" error={errors.result?.message}>
+                    <FormField disabled={isCancelled} label="Resultado" error={errors.result?.message}>
                         <ResultSelect />
                     </FormField>
 
-                    <FormField label="Torneira" error={errors.faucetCode?.message} isRequired>
+                    <FormField disabled={isCancelled} label="Torneira" error={errors.faucetCode?.message} isRequired>
                         <HStack>
                             <Input
                                 size={"xs"}
@@ -175,7 +208,7 @@ export const InfoMutate = ({ swab, onSuccess, formRef }: SwabDataProps) => {
                                 {...register("faucetCode", { deps: ["sameFaucetJustification"] })}
                             />
                             {isSameFaucet && (
-                                <Justification
+                                <Justification disabled={isCancelled}
                                     textLabel="Motivo uso mesma torneira:"
                                     valueJustification="sameFaucetJustification"
                                     inputRevalidate="faucetCode"
@@ -184,20 +217,24 @@ export const InfoMutate = ({ swab, onSuccess, formRef }: SwabDataProps) => {
                         </HStack>
                     </FormField>
 
-                    <FormField label="Analista" isRequired error={errors.operatorId?.message}>
+                    <FormField disabled={isCancelled} label="Analista" isRequired error={errors.operatorId?.message}>
                         <OperatorSelect />
                     </FormField>
 
-                    <FormField isRequired IsDiplay={isVisual} label="lote ATP" error={errors.batch?.message}>
-                        <Input size={"xs"} placeholder="ex:Ez4522" {...register('batch')} />
+                    <FormField disabled={isCancelled} isRequired IsDiplay={isVisual} label="lote ATP" error={errors.batch?.message}>
+                        <Input size={"xs"} placeholder="ex:Ez4522" {...register("batch", {
+                            setValueAs: (value: string) => value || null,
+                        })} />
                     </FormField>
 
-                    <FormField isRequired IsDiplay={isVisual} label="Value ATP (RLU)" error={errors.valueAtp?.message}>
-                        <Input disabled={isVisual} size={"xs"} placeholder="ex:30" {...register('valueAtp')} />
+                    <FormField disabled={isCancelled} isRequired IsDiplay={isVisual} label="Value ATP (RLU)" error={errors.valueAtp?.message}>
+                        <Input disabled={isCancelled || isVisual} size={"xs"} placeholder="ex:30" {...register("valueAtp", {
+                            setValueAs: (value: unknown) => value === "" || value == null ? null : Number(value),
+                        })} />
                     </FormField>
 
                     <GridItem colSpan={{ base: 2, md: 3, lg: 3 }}>
-                        <FormField label="Oberservações" error={errors.observation?.message} textHelper="Max 500 characteres.">
+                        <FormField disabled={isCancelled} label="Oberservações" error={errors.observation?.message} textHelper="Max 500 characteres.">
                             <Textarea {...register('observation')} placeholder="Oberservação..." variant="outline" />
                         </FormField>
                     </GridItem>

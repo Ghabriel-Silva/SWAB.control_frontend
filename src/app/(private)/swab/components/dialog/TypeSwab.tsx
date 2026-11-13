@@ -1,35 +1,38 @@
 import { SwabCheckType } from "@/app/(private)/types/swab"
 import { Portal, Select, createListCollection } from "@chakra-ui/react"
 import { Controller, useFormContext } from "react-hook-form"
-import { UpdateSwabType } from "../../validations/update.swab.schema"
+import { SwabSelectProps } from "../../types/swab.select.props"
 
 
-interface DisabledProps {
-    value: boolean
+interface DisabledProps extends SwabSelectProps {
+    value?: boolean
 }
-export function TypeSwabSelect({ value }: DisabledProps) {
-    const { control, trigger } = useFormContext<UpdateSwabType>()
+export function TypeSwabSelect({ value = false, size = "xs", placeholder, clearable = false }: DisabledProps) {
+    const { control, trigger } = useFormContext<{ performedType: string }>()
     return (
         <Controller
             control={control}
             name="performedType"
             render={({ field }) => (
                 <Select.Root
+                    name={field.name}
                     disabled={value}
                     collection={swabTypeCollection}
-                    size="xs"
+                    size={size}
+                    onFocusOutside={field.onBlur}
                     value={field.value ? [field.value] : []}
                     onValueChange={({ value }) => {
-                        field.onChange(value[0])
+                        field.onChange(value[0] ?? "")
                         trigger("performedType")
                     }}
                 >
                     <Select.HiddenSelect />
                     <Select.Control>
-                        <Select.Trigger>
-                            <Select.ValueText />
+                        <Select.Trigger ref={field.ref}>
+                            <Select.ValueText placeholder={placeholder} />
                         </Select.Trigger>
                         <Select.IndicatorGroup>
+                            {clearable && <Select.ClearTrigger aria-label="Limpar tipo de SWAB" />}
                             <Select.Indicator color="colorPalette.fg" />
                         </Select.IndicatorGroup>
                     </Select.Control>

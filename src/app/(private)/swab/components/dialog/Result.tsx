@@ -1,10 +1,10 @@
 import { SwabCheckResult } from "@/app/(private)/types/swab"
 import { Portal, Select, createListCollection } from "@chakra-ui/react"
 import { Controller, useFormContext } from "react-hook-form";
-import { UpdateSwabType } from "../../validations/update.swab.schema";
+import { SwabSelectProps } from "../../types/swab.select.props";
 
-export const ResultSelect = () => {
-    const { control} = useFormContext<UpdateSwabType>()
+export const ResultSelect = ({ size = "xs", placeholder, clearable = false }: SwabSelectProps) => {
+    const { control } = useFormContext<{ result: string }>()
     return (
         <Controller
             control={control}
@@ -15,16 +15,18 @@ export const ResultSelect = () => {
                     value={field.value ? [field.value] : []}
                     collection={swabCheckResultCollection}
                     onValueChange={(details) => {
-                        field.onChange(details.value[0])
+                        field.onChange(details.value[0] ?? "")
                     }}
-                    size="xs"
+                    onFocusOutside={field.onBlur}
+                    size={size}
                 >
                     <Select.HiddenSelect />
                     <Select.Control>
-                        <Select.Trigger>
-                            <Select.ValueText />
+                        <Select.Trigger ref={field.ref}>
+                            <Select.ValueText placeholder={placeholder} />
                         </Select.Trigger>
                         <Select.IndicatorGroup>
+                            {clearable && <Select.ClearTrigger aria-label="Limpar resultado" />}
                             <Select.Indicator color="colorPalette.fg" />
                         </Select.IndicatorGroup>
                     </Select.Control>

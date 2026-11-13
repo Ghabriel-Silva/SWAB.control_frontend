@@ -8,14 +8,16 @@ interface FormFieldProps {
     textHelper?: string
     props?: FieldItemProps,
     IsDiplay?: boolean
+    disabled?: boolean
 
 }
 
 //Componente Para padronizar input e mensagem de erro no formulario
-export const FormField = ({ label, error, children, isRequired, textHelper, IsDiplay, props }: FormFieldProps) => {
+export const FormField = ({ label, error, children, isRequired, textHelper, IsDiplay, disabled, props }: FormFieldProps) => {
     return (
         <Field.Root
             {...props}
+            {...{ disabled }}
             display={IsDiplay ? 'none' : 'block'}
             required={isRequired}
             invalid={!!error

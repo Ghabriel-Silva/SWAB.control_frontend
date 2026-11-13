@@ -1,11 +1,11 @@
+import { ApiResponse } from "@/app/shared/types/api.response";
 import { CreateSwabResponse } from "../types/create.swab.response";
 import { FormCreateType } from "../types/form.create.swab";
-import { SwabResponse } from "../types/swab.response";
 
 
 export async function CreateSwabService(
     data: FormCreateType
-): Promise<SwabResponse<CreateSwabResponse>> {
+): Promise<ApiResponse<CreateSwabResponse>> {
     const res = await fetch('/api/swab/create', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -17,5 +17,5 @@ export async function CreateSwabService(
         throw new Error(json?.message || "Erro ao criar swab");
     }
 
-    return json as SwabResponse<CreateSwabResponse>
+    return json as ApiResponse<CreateSwabResponse>
 }

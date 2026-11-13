@@ -4,8 +4,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import { ptBR } from '@mui/x-data-grid/locales';
 import { SwabGridRow } from "../../types/swab.data-grid";
 import { columns } from "./Columns";
-import { Meta } from "../../types/swab.response";
-import { useSearchParams } from "next/navigation";
+import { Meta } from "@/app/shared/types/api.response";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { StatEmpaty } from "@/app/(private)/components";
 
@@ -13,16 +13,18 @@ interface Props {
     rows: SwabGridRow[];
     loading: boolean;
     dataMeta: Meta;
+    hasFilter?: boolean;
 }
 
 
-export function SwabTable({ rows, loading, dataMeta }: Props) {
+export function SwabTable({ rows, loading, dataMeta, hasFilter = false }: Props) {
+    const pathname = usePathname();
     const searchParams = useSearchParams()
     const router = useRouter()
     const NoRowsOverlay = () => (
         <StatEmpaty
-            title="Nenhum swab pendente"
-            description="Tudo certo por aqui — nenhuma pendência no momento."
+            title={hasFilter ? "Nenhum registro encontrado" : "Nenhum swab pendente"}
+            description={hasFilter ? "Tente ajustar ou limpar os filtros." : "Tudo certo por aqui — nenhuma pendência no momento."}
         />
     )
     return (
@@ -59,11 +61,12 @@ export function SwabTable({ rows, loading, dataMeta }: Props) {
                 }}
                 pageSizeOptions={[10, 20, 50, 100]}
                 onPaginationModelChange={(model) => {
+                    if (loading || (model.page === dataMeta.page - 1 && model.pageSize === dataMeta.limit)) return;
                     const params = new URLSearchParams(searchParams.toString())
                     params.set('page', String(model.page + 1))
                     params.set('limit', String(model.pageSize))
 
-                    router.push(`/swab?${params.toString()}`)
+                    router.push(`${pathname}?${params.toString()}`, { scroll: false })
                 }}
                 rowCount={dataMeta.total}
                 slots={{

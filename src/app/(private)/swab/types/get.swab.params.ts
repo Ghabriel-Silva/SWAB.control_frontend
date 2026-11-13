@@ -1,12 +1,16 @@
+import { SwabCheckResult, SwabCheckType } from "../../types/swab";
+
 export interface GetSwabsParams {
     locationId?: string;
     operatorId?: string;
-    result?: string;
+    result?: SwabCheckResult;
     internalCode?: string;
-    type?: string
+    performedType?: SwabCheckType;
     startDate?: string;
     endDate?: string;
     isCancelled?: boolean;
     page?: number;
     limit?: number;
+    order?: "ASC" | "DESC";
+
 }

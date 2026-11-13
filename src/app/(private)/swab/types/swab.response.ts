@@ -15,6 +15,7 @@ export interface Check {
     sameFaucetJustification: string | null;
     updateSwabJustification: string | null;
     observation: string | null
+    justificationLastReprovation: string | null
 }
 
 export interface Operator {
@@ -35,18 +36,4 @@ export interface SwabApiItem {
     batch: string | null;
     location: Location;
     check: Check;
-}
-export interface Meta {
-    limit: number,
-    page: number,
-    total: number,
-    totalPages: number
-}
-
-
-export interface SwabResponse<T> {
-    success: boolean;
-    message: string;
-    data: T;
-    meta: Meta;
 }

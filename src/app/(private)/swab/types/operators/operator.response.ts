@@ -1,8 +1,10 @@
+import { Meta } from "@/app/shared/types/api.response";
+
 export interface OperatorsResponse {
     success: boolean
     message: string
     data: Operator[]
-    meta: null
+    meta: Meta | null
 }
 
 export interface Operator {

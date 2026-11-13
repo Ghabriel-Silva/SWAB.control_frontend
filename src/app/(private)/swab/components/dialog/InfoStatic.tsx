@@ -1,5 +1,5 @@
-import { Badge, SimpleGrid } from "@chakra-ui/react";
-import {BodyText, FormField, InfoNull} from "@/app/(private)/components/index";
+import { Alert, Badge, GridItem, SimpleGrid } from "@chakra-ui/react";
+import { BodyText, FormField, InfoNull, SubtitleText } from "@/app/(private)/components/index";
 import { format } from "date-fns";
 import { defineColorTypeSwab } from "@/app/(private)/utils/defineColorTypeSwab";
 import { SwabDataProps } from "../../types/swab.dataProps";
@@ -10,12 +10,17 @@ export const InfoStatic = ({ swab }: SwabDataProps) => {
         <SimpleGrid
             border={"1px solid"}
             borderColor={"gray.200"}
-            p={4}
+            p={2}
             borderRadius={"sm"}
             columns={{ base: 2, md: 3, lg: 3 }}
             gap={4}
             w="100%"
         >
+            <GridItem gridColumn="1 / -1">
+                <SubtitleText fontWeight="medium" textTransform="uppercase">
+                    Informações do registro
+                </SubtitleText>
+            </GridItem>
             <FormField label="Lote">
                 <BodyText>{swab?.internalCode}</BodyText>
             </FormField>
@@ -73,6 +78,27 @@ export const InfoStatic = ({ swab }: SwabDataProps) => {
                     }
                 </Badge>
             </FormField>
+            {swab.cancelReason?.trim() && (
+                <Alert.Root
+                    status="info"
+                    gridColumn="1 / -1"
+                    borderRadius="sm"
+                >
+                    <Alert.Indicator />
+                    <Alert.Content>
+                        <Alert.Title >
+                            Motivo do cancelamento
+                        </Alert.Title>
+                        <Alert.Description
+                            whiteSpace="pre-wrap"
+                            overflowWrap="anywhere"
+                            
+                        >
+                            {swab.cancelReason}
+                        </Alert.Description>
+                    </Alert.Content>
+                </Alert.Root>
+            )}
         </SimpleGrid>
     )
 }
