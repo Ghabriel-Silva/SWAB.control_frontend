@@ -1,6 +1,7 @@
 import { SwabCheckResult, SwabCheckType } from "../../types/swab";
 
 export interface GetSwabsParams {
+    areaId?: string;
     locationId?: string;
     operatorId?: string;
     result?: SwabCheckResult;

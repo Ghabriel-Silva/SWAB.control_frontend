@@ -2,6 +2,8 @@
 
 import { Box, Flex } from "@chakra-ui/react";
 import { OptionalView } from "@/app/(private)/components";
+import { AreaSelect } from "@/app/(private)/area/components/AreaSelect";
+import { saveAreaId } from "@/app/(private)/area/hooks/useSavedAreaId";
 import {
     FormProvider,
     useForm
@@ -60,7 +62,7 @@ export function FilterSwab({
         Object.entries(filters).forEach(([key, value]) => {
             params.delete(key)
 
-            if (value || key === "startDate" || key === "endDate") {
+            if (value || key === "areaId" || key === "startDate" || key === "endDate") {
                 params.set(key, value);
             }
         })
@@ -68,7 +70,10 @@ export function FilterSwab({
         params.delete("type")
         params.set("page", "1")
 
-        reset(filters, { keepFieldsRef: true });
+        saveAreaId(filters.areaId)
+
+        reset(filters, { keepFieldsRef: true })
+        
         router.push(`${pathname}?${params.toString()}`, { scroll: false })
     }
 
@@ -110,6 +115,7 @@ export function FilterSwab({
                                 },
                             }}
                         >
+                            <AreaSelect />
                             <LocationFilter
                                 locations={locations}
                                 loading={locationsLoading}

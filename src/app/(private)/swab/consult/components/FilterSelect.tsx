@@ -7,9 +7,10 @@ import {
 import { Controller, useFormContext } from "react-hook-form";
 import { FormField } from "@/app/(private)/components";
 import type { SwabFilterValues } from "../validations/filter.swab.schema";
+import { capitalizeWords } from "@/app/shared/utils/capitalizeWords";
 
 interface FilterSelectProps {
-    name: "locationId" | "isCancelled";
+    name: "areaId" | "locationId" | "isCancelled";
     label: string;
     options: { label: string; value: string }[];
     disabled?: boolean;
@@ -23,13 +24,19 @@ export function FilterSelect({
     options,
     disabled,
     placeholder = "Todos",
-    error
+    error, 
 }: FilterSelectProps) {
     const {
         control,
         formState: { errors }
     } = useFormContext<SwabFilterValues>();
-    const collection = createListCollection({ items: options });
+
+    const collection = createListCollection({
+        items: options.map((option) => ({
+            ...option,
+            label: capitalizeWords(option.label),
+        })),
+    });
 
     return (
         <Box
@@ -59,7 +66,7 @@ export function FilterSelect({
                                     <Select.ValueText placeholder={placeholder} />
                                 </Select.Trigger>
                                 <Select.IndicatorGroup>
-                                    <Select.ClearTrigger aria-label={`Limpar ${label.toLowerCase()}`} />
+                                    <Select.ClearTrigger />
                                     <Select.Indicator color="colorPalette.fg" />
                                 </Select.IndicatorGroup>
                             </Select.Control>

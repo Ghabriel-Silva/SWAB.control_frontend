@@ -33,6 +33,7 @@ const idField = (message: string) =>
         );
 
 export const filterSwabSchema = yup.object({
+    areaId: idField("Selecione uma área válida."),
     locationId: idField("Selecione um local válido."),
     operatorId: idField("Selecione um operador válido."),
     performedType: yup.mixed<SwabCheckType | "">()
@@ -69,21 +70,21 @@ export const filterSwabSchema = yup.object({
 
                 return !endDate || !!value;
             }
-        ),
-    endDate: dateField("A data final")
+        )
         .test(
             "date-range",
-            "A data final deve ser igual ou posterior à data inicial.",
+            "A data inicial deve ser igual ou anterior à data final.",
             function (value) {
-                const { startDate } = this.parent as { startDate: string };
+                const { endDate } = this.parent as { endDate: string };
 
                 return !value
-                    || !startDate
+                    || !endDate
                     || !isValidDate(value)
-                    || !isValidDate(startDate)
-                    || startDate <= value;
+                    || !isValidDate(endDate)
+                    || value <= endDate;
             }
         ),
+    endDate: dateField("A data final"),
 });
 
 export type SwabFilterValues = yup.InferType<typeof filterSwabSchema>;

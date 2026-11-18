@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useSavedAreaId } from "@/app/(private)/area/hooks/useSavedAreaId";
 import { useGetSwab } from "../hooks/useGetData";
 import { SwabTable } from "./table/SwabTable";
 import { toaster } from "@/components/ui/toaster";
@@ -28,11 +29,17 @@ interface PropsSwabClient {
 }
 export default function SwabClient({ hasFilter = false, filterDinamic }: PropsSwabClient) {
 
-    const searchParams = useSearchParams();
-    const isDesktop = useBreakpointValue({ base: false, lg: true }) ?? false;
+    const searchParams = useSearchParams()
+
+    const savedAreaId = useSavedAreaId()
+
+    const isDesktop = useBreakpointValue({ base: false, lg: true }) ?? false
 
     const urlFilters = filterSwabSchema.cast(
-        Object.fromEntries(searchParams),
+        {
+            areaId: hasFilter ? savedAreaId ?? "" : "",
+            ...Object.fromEntries(searchParams),
+        },
         { stripUnknown: true }
     )
     const defaultDates = getDefaultDateRange()
@@ -57,9 +64,12 @@ export default function SwabClient({ hasFilter = false, filterDinamic }: PropsSw
         limit: Number(searchParams.get("limit") ?? 20),
         page: Number(searchParams.get("page") ?? 1),
         order: order === "ASC" || order === "DESC" ? order : undefined,
-    };
+    }
 
-    const { data, isLoading, isFetching, isError, error } = useGetSwab(filters);
+    //se eu tiver area no searchParams ou area salva, quando recarego a pagina o componente full screnLoading é chamado
+    const areaReady =  searchParams.has("areaId") || savedAreaId !== null
+
+    const { data, isLoading, isFetching, isError, error } = useGetSwab(filters, areaReady)
 
     useEffect(() => {
         if (isError) {
@@ -73,10 +83,10 @@ export default function SwabClient({ hasFilter = false, filterDinamic }: PropsSw
         }
     }, [isError, error]);
 
-    if (isLoading && !data && !hasFilter) {
+    //vai chamar o full screenloading quando a area não estiver pronta ou quando estiver carregando e não tiver dados ainda
+    if (!areaReady || (isLoading && !data)) {
         return <FullScreenLoading />
     }
-
     const rows: SwabGridRow[] =
         data?.data?.map((item) => ({
             id: item.id,
