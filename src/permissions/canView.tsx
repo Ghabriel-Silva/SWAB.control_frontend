@@ -1,10 +1,10 @@
 import { ReactNode } from "react"
-import { Role } from "./roles"
+import { Role, RoleType } from "./roles"
 import { useAuth } from "./auth-provider"
 
 interface CanProps {
     children: ReactNode,
-    userRole: Role
+    userRole: RoleType | RoleType[]
 }
 
 export function CanView({ children, userRole }: CanProps) {
@@ -14,7 +14,7 @@ export function CanView({ children, userRole }: CanProps) {
 
     const hasPermission = role !== null && allowed.includes(role)
 
-    if (hasPermission) return null
+    if (!hasPermission) return null
 
     return <>{children}</>
 

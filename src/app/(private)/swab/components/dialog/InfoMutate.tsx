@@ -11,6 +11,8 @@ import { ATP_REQUIRED_TYPES } from "../../types/atp.required.types";
 import { useUpdateSwab } from "../../hooks/useUpdateSwab";
 import { UpdateSwabParams } from "../../types/update.swab.params";
 import { toaster } from "@/components/ui/toaster";
+import { Can } from "@/permissions/can";
+import { Role } from "@/permissions/roles";
 
 
 export const InfoMutate = ({ swab, onSuccess, formRef }: SwabDataProps) => {
@@ -179,65 +181,103 @@ export const InfoMutate = ({ swab, onSuccess, formRef }: SwabDataProps) => {
                             Dados da análise
                         </SubtitleText>
                     </GridItem>
-                    <FormField disabled={isCancelled} label="Tipo Swab" error={errors.performedType?.message}>
-                        <HStack>
-                            <TypeSwabSelect value={isCancelled || isDisableSelectType || swabIsAproved} />
-                            {showUpdateJustification && (
-                                <Justification disabled={isCancelled}
-                                    textLabel="Justificativa mudança de Swab: "
-                                    valueJustification="updateSwabJustification"
-                                    inputRevalidate="performedType"
-                                />
-                            )}
-                        </HStack>
-                    </FormField>
+                    <Can roleUser={[Role.ADMIN, Role.LAB, Role.OWNER]}>
+                        {(hasPermission) => (
+                            <FormField disabled={isCancelled || !hasPermission} label="Tipo Swab" error={errors.performedType?.message}>
+                                <HStack>
+                                    <TypeSwabSelect value={isCancelled || isDisableSelectType || swabIsAproved || !hasPermission} />
+                                    {showUpdateJustification && (
+                                        <Justification disabled={isCancelled || !hasPermission}
+                                            textLabel="Justificativa mudança de Swab: "
+                                            valueJustification="updateSwabJustification"
+                                            inputRevalidate="performedType"
+                                        />
+                                    )}
+                                </HStack>
+                            </FormField>
+                        )}
+                    </Can>
 
-                    <FormField disabled={isCancelled} label="Realização" error={errors.validatedAt?.message}>
-                        <Calendar disabled={isCancelled} />
-                    </FormField>
 
-                    <FormField disabled={isCancelled} label="Resultado" error={errors.result?.message}>
-                        <ResultSelect />
-                    </FormField>
+                    <Can roleUser={[Role.ADMIN, Role.LAB, Role.OWNER]}>
+                        {(hasPermission) => (
+                            <FormField disabled={isCancelled || !hasPermission} label="Realização" error={errors.validatedAt?.message}>
+                                <Calendar disabled={isCancelled || !hasPermission} />
+                            </FormField>
+                        )}
+                    </Can>
 
-                    <FormField disabled={isCancelled} label="Torneira" error={errors.faucetCode?.message} isRequired>
-                        <HStack>
-                            <Input
-                                size={"xs"}
-                                placeholder="ex: 22"
-                                {...register("faucetCode", { deps: ["sameFaucetJustification"] })}
-                            />
-                            {isSameFaucet && (
-                                <Justification disabled={isCancelled}
-                                    textLabel="Motivo uso mesma torneira:"
-                                    valueJustification="sameFaucetJustification"
-                                    inputRevalidate="faucetCode"
-                                />
-                            )}
-                        </HStack>
-                    </FormField>
 
-                    <FormField disabled={isCancelled} label="Analista" isRequired error={errors.operatorId?.message}>
-                        <OperatorSelect />
-                    </FormField>
+                    <Can roleUser={[Role.ADMIN, Role.LAB, Role.OWNER]}>
+                        {(hasPermission) => (
+                            <FormField disabled={isCancelled || !hasPermission} label="Resultado" error={errors.result?.message}>
+                                <ResultSelect />
+                            </FormField>
+                        )}
+                    </Can>
 
-                    <FormField disabled={isCancelled} isRequired IsDiplay={isVisual} label="lote ATP" error={errors.batch?.message}>
-                        <Input size={"xs"} placeholder="ex:Ez4522" {...register("batch", {
-                            setValueAs: (value: string) => value || null,
-                        })} />
-                    </FormField>
 
-                    <FormField disabled={isCancelled} isRequired IsDiplay={isVisual} label="Value ATP (RLU)" error={errors.valueAtp?.message}>
-                        <Input disabled={isCancelled || isVisual} size={"xs"} placeholder="ex:30" {...register("valueAtp", {
-                            setValueAs: (value: unknown) => value === "" || value == null ? null : Number(value),
-                        })} />
-                    </FormField>
+                    <Can roleUser={[Role.ADMIN, Role.LAB, Role.OWNER]}>
+                        {(hasPermission) => (
+                            <FormField disabled={isCancelled || !hasPermission} label="Torneira" error={errors.faucetCode?.message} isRequired>
+                                <HStack>
+                                    <Input
+                                        size={"xs"}
+                                        placeholder="ex: 22"
+                                        {...register("faucetCode", { deps: ["sameFaucetJustification"] })}
+                                    />
+                                    {isSameFaucet && (
+                                        <Justification disabled={isCancelled || !hasPermission}
+                                            textLabel="Motivo uso mesma torneira:"
+                                            valueJustification="sameFaucetJustification"
+                                            inputRevalidate="faucetCode"
+                                        />
+                                    )}
+                                </HStack>
+                            </FormField>
+                        )}
+                    </Can>
 
-                    <GridItem colSpan={{ base: 2, md: 3, lg: 3 }}>
-                        <FormField disabled={isCancelled} label="Oberservações" error={errors.observation?.message} textHelper="Max 500 characteres.">
-                            <Textarea {...register('observation')} placeholder="Oberservação..." variant="outline" />
-                        </FormField>
-                    </GridItem>
+                    <Can roleUser={[Role.ADMIN, Role.LAB, Role.OWNER]}>
+                        {(hasPermission) => (
+                            <FormField disabled={isCancelled || !hasPermission} label="Analista" isRequired error={errors.operatorId?.message}>
+                                <OperatorSelect />
+                            </FormField>
+                        )}
+                    </Can>
+
+
+                    <Can roleUser={[Role.ADMIN, Role.LAB, Role.OWNER]}>
+                        {(hasPermission) => (
+                            <FormField disabled={isCancelled || !hasPermission} isRequired IsDiplay={isVisual} label="lote ATP" error={errors.batch?.message}>
+                                <Input size={"xs"} placeholder="ex:Ez4522" {...register("batch", {
+                                    setValueAs: (value: string) => value || null,
+                                })} />
+                            </FormField>
+                        )}
+                    </Can>
+
+                    <Can roleUser={[Role.ADMIN, Role.LAB, Role.OWNER]}>
+                        {(hasPermission) => (
+                            <FormField disabled={isCancelled || !hasPermission} isRequired IsDiplay={isVisual} label="Value ATP (RLU)" error={errors.valueAtp?.message}>
+                                <Input disabled={isCancelled || isVisual || !hasPermission} size={"xs"} placeholder="ex:30" {...register("valueAtp", {
+                                    setValueAs: (value: unknown) => value === "" || value == null ? null : Number(value),
+                                })} />
+                            </FormField>
+                        )}
+                    </Can>
+
+
+                    <Can roleUser={[Role.ADMIN, Role.LAB, Role.OWNER]}>
+                        {(hasPermission) => (
+                            <GridItem colSpan={{ base: 2, md: 3, lg: 3 }}>
+                                <FormField disabled={isCancelled || !hasPermission} label="Oberservações" error={errors.observation?.message} textHelper="Max 500 characteres.">
+                                    <Textarea {...register('observation')} placeholder="Oberservação..." variant="outline" />
+                                </FormField>
+                            </GridItem>
+                        )}
+                    </Can>
+
                 </SimpleGrid>
             </form>
         </FormProvider>

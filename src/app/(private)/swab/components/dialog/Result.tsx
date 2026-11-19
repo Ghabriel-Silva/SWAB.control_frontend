@@ -2,6 +2,7 @@ import { SwabCheckResult } from "@/app/(private)/types/swab"
 import { Portal, Select, createListCollection } from "@chakra-ui/react"
 import { Controller, useFormContext } from "react-hook-form";
 import { SwabSelectProps } from "../../types/swab.select.props";
+import { capitalizeWords } from "@/app/shared/utils/capitalizeWords";
 
 export const ResultSelect = ({ size = "xs", placeholder, clearable = false }: SwabSelectProps) => {
     const { control } = useFormContext<{ result: string }>()

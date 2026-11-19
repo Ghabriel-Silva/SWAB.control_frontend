@@ -57,20 +57,6 @@ export function Header({
                 {userName}
             </SubtitleText>
 
-            {/* <Box>
-                <Can roleUser={[Role.LAB]} >
-                    {(hasPermission) => {
-                        return (
-                            <Button
-                                disabled={!hasPermission}
-                                colorPalette="red" >
-                                Apenas lab vê isso
-                            </Button>
-                        )
-
-                    }}
-                </Can>
-            </Box> */}
         </HStack>
     )
 }

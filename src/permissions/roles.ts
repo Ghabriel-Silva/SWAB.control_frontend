@@ -1,7 +1,9 @@
 export enum Role {
     OWNER = 'OWNER',
     ADMIN = 'ADMIN',
-    LAB = 'LAB'
+    LAB = 'LAB',
+    PRODUCTION = 'PRODUCTION'
+
 }
 
-export type RoleType =  `${Role}`
+export type RoleType = Role

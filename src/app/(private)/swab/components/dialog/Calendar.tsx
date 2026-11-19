@@ -24,6 +24,7 @@ export const Calendar = ({ disabled = false }: { disabled?: boolean }) => {
     const { control } = useFormContext<UpdateSwabType>()
     return (
         <Controller
+
             control={control}
             name="validatedAt"
             render={({ field }) => {
@@ -71,15 +72,16 @@ export const Calendar = ({ disabled = false }: { disabled?: boolean }) => {
 
                 return (
                     <DatePicker.Root
+                        _disabled={{ opacity: '0.9' }}
                         disabled={disabled}
                         maxWidth="20rem"
-                         size={"xs"}
+                        size={"xs"}
                         variant={"outline"}
                         value={value}
                         onValueChange={onDateChange}
                         closeOnSelect={false}
                     >
-                        <DatePicker.Control  overflow={'hidden'}>
+                        <DatePicker.Control overflow={'hidden'}>
                             <DatePicker.Trigger asChild unstyled>
                                 <Button variant="outline" width="full" justifyContent="space-between" size={"xs"}>
                                     {value[0]

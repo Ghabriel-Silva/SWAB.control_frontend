@@ -18,13 +18,20 @@ export const FormField = ({ label, error, children, isRequired, textHelper, IsDi
         <Field.Root
             {...props}
             {...{ disabled }}
+            css={{
+                "& :is(input, textarea, select, button):is(:disabled, [data-disabled], [aria-disabled='true'])": {
+                    opacity: 0.9,
+                    color: "fg",
+                    bg: "bg.muted",
+                },
+            }}
             display={IsDiplay ? 'none' : 'block'}
             required={isRequired}
             invalid={!!error
             }
         >
             {label && (
-                <Field.Label>
+                <Field.Label _disabled={{ opacity: 1 }}>
                     <SubtitleText>
                         {label} <Field.RequiredIndicator />
                     </SubtitleText>

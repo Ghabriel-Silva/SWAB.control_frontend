@@ -48,7 +48,7 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel, 
     return (
         <Popover.Root positioning={{ placement: "bottom-start" }}>
             <Popover.Trigger asChild>
-                <Button disabled={disabled} variant={"outline"} size={"xs"}>
+                <Button variant={"outline"} size={"xs"}>
                     <Tooltip
                         content={
                             hasValue
@@ -75,11 +75,13 @@ export const Justification = ({ valueJustification, inputRevalidate, textLabel, 
                     <Popover.Content>
                         <Popover.Arrow />
                         <Popover.Body>
-                            <FormField disabled={disabled}
+                            <FormField
                                 label={textLabel}
+                                disabled={disabled}
                                 error={errors?.[valueJustification]?.message}
                             >
                                 <Textarea
+
                                     {...register(`${valueJustification}`, {
                                         deps: [inputRevalidate],
                                         setValueAs: (value: unknown) => updateSwabSchema.fields[valueJustification].cast(value)

@@ -12,8 +12,8 @@ export const UNAUTHENTICATED_ROUTE = '/login'
 export const FORBIDDEN_ROUTE = '/forbidden'
 
 export const ROUTE_PERMISSIONS: Record<string, RoleType[]> = {
-    "/swab": [Role.OWNER, Role.LAB, Role.ADMIN],
-    "/home": [Role.OWNER, Role.LAB, Role.ADMIN]
+    "/swab": [Role.OWNER, Role.LAB, Role.ADMIN, Role.PRODUCTION],
+    "/home": [Role.OWNER, Role.LAB, Role.ADMIN, Role.PRODUCTION],
 
 }
 

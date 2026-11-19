@@ -4,6 +4,8 @@ import { SubtitleText } from "@/app/(private)/components/index"
 import { SwabGridRow } from "../../types/swab.data-grid"
 import { BodyDialog } from "@/app/(private)/swab/components/index";
 import { useRef, useState } from "react";
+import { Can } from "@/permissions/can";
+import { Role } from "@/permissions/roles";
 interface DialogContainerProps {
     row: SwabGridRow;
 }
@@ -61,10 +63,18 @@ export function DialogContainer({ row }: DialogContainerProps) {
                             <Dialog.ActionTrigger asChild>
                                 <Button variant="outline">Cancelar</Button>
                             </Dialog.ActionTrigger>
-                            <Button
-                                disabled={row.isCancelledSwab}
-                                onClick={() => formRef.current?.requestSubmit()}
-                            >Salvar</Button>
+                            <Can roleUser={[Role.LAB, Role.ADMIN, Role.OWNER]}>
+                                {(hasPermission) => (
+                                    <Button
+                                        disabled={row.isCancelledSwab || !hasPermission}
+                                        _disabled={{ opacity: 0.85 }}
+                                        onClick={() => formRef.current?.requestSubmit()}
+                                    >
+                                        Salvar
+                                    </Button>
+                                )}
+                            </Can>
+
                         </Dialog.Footer>
                         <Dialog.CloseTrigger asChild>
                             <CloseButton size="sm" />

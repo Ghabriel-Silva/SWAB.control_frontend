@@ -9,12 +9,12 @@ import {
     useListCollection,
 } from "@chakra-ui/react"
 import { useEffect } from "react"
-import { Tooltip } from "@/components/ui/tooltip"
 
 import { useGetOperators } from "../../hooks/useGetOperators"
 import { Operator } from "../../types/operators/operator.response"
 import { Controller, useFormContext } from "react-hook-form"
 import { SwabSelectProps } from "../../types/swab.select.props"
+import { capitalizeWords } from "@/app/shared/utils/capitalizeWords"
 
 export const OperatorSelect = ({ size = "xs", placeholder = "Pesquisar operador", clearable = true }: SwabSelectProps) => {
     const { control } = useFormContext<{ operatorId: string }>()
@@ -22,7 +22,7 @@ export const OperatorSelect = ({ size = "xs", placeholder = "Pesquisar operador"
     const { data, isLoading, isError } = useGetOperators()
 
     const { collection, set, filter } = useListCollection<Operator>({
-        initialItems:data?.data ?? [],
+        initialItems: data?.data ?? [],
         itemToString: (item) => item.name,
         itemToValue: (item) => item.id,
         filter: (text, query, item) => `${text} ${item.position?.name ?? ""}`.toLocaleLowerCase("pt-BR").includes(query.toLocaleLowerCase("pt-BR")),
@@ -55,7 +55,7 @@ export const OperatorSelect = ({ size = "xs", placeholder = "Pesquisar operador"
                     <Combobox.Control>
                         <Combobox.Input ref={field.ref} onBlur={field.onBlur} placeholder={placeholder} />
                         <Combobox.IndicatorGroup>
-                            {clearable && <Combobox.ClearTrigger  />}
+                            {clearable && <Combobox.ClearTrigger />}
                             <Combobox.Trigger />
                         </Combobox.IndicatorGroup>
                     </Combobox.Control>
@@ -85,30 +85,25 @@ export const OperatorSelect = ({ size = "xs", placeholder = "Pesquisar operador"
                                                 gap={2}
                                                 cursor="pointer"
                                             >
-                                                <Tooltip content={operator.name}>
-                                                    <Span
-                                                        
-                                                        fontWeight="normal"
-                                                        flex={1}
-                                                        minW={0}
-                                                        truncate
-                                                    >
-                                                        {operator.name}
-                                                    </Span>
-                                                </Tooltip>
-                                                <Tooltip
-                                                    content={operator.position?.name ?? ""}
-                                                    disabled={!operator.position?.name}
+
+                                                <Span
+                                                    title={capitalizeWords(operator.name)}
+                                                    fontWeight="normal"
+                                                    flex={1}
+                                                    minW={0}
+                                                    truncate
                                                 >
+                                                    {capitalizeWords(operator.name)}
+                                                </Span>
                                                     <Span
+                                                        title={capitalizeWords(operator.position?.name ?? "")}
                                                         color="fg.muted"
                                                         flex={1}
                                                         minW={0}
                                                         truncate
                                                     >
                                                         {operator.position?.name}
-                                                    </Span>
-                                                </Tooltip>
+                                                    </Span>                                            
                                             </HStack>
 
                                             <Combobox.ItemIndicator flexShrink={0} />

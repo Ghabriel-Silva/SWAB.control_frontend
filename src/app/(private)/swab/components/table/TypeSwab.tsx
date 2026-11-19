@@ -4,9 +4,10 @@ import { ValueDataGridColumn } from "../../types/value.data-grid.column"
 import { defineColorTypeSwab } from "@/app/(private)/utils/defineColorTypeSwab"
 
 export function TypeSwab({ value }: ValueDataGridColumn<SwabCheckType>) {
+
     return (
         <Badge  colorPalette={defineColorTypeSwab(value)} >
-            {value}
+            {value.toLocaleLowerCase().replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}
         </Badge>
     )
 }

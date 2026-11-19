@@ -20,6 +20,8 @@ import {
     cancelSwabSchema,
     type CancelSwabType,
 } from "../../validations/cancel.swab.schema";
+import { Can } from "@/permissions/can";
+import { Role } from "@/permissions/roles";
 
 export function CancelSwabDialog({ row }: { row: SwabGridRow }) {
     const [open, setOpen] = useState(false)
@@ -50,8 +52,8 @@ export function CancelSwabDialog({ row }: { row: SwabGridRow }) {
                 closable: true,
             })
 
-            setOpen(false);
-            reset();
+            setOpen(false)
+            reset()
         } catch (error) {
             toaster.create({
                 title: "Erro",
@@ -81,20 +83,24 @@ export function CancelSwabDialog({ row }: { row: SwabGridRow }) {
             lazyMount
             unmountOnExit
         >
-            <Dialog.Trigger asChild >
-                <IconButton
-                    type="button"
-                    aria-label={`Cancelar SWAB ${row.lote}`}
-                    title={row.isCancelledSwab ? "Este SWAB já foi cancelado" : "Cancelar SWAB"}
-                    disabled={row.isCancelledSwab}
-                    variant="ghost"
-                    colorPalette="red"
-                    size="xs"
-                    onClick={(event) => event.stopPropagation()}
-                >
-                    <FiTrash2 style={{ width: 14, height: 14 }} />
-                </IconButton>
-            </Dialog.Trigger>
+            <Can roleUser={[Role.LAB, Role.ADMIN, Role.OWNER]}>
+                {(hasPermission) => (
+                    <Dialog.Trigger asChild>
+                        <IconButton
+                            type="button"
+                            aria-label={`Cancelar SWAB ${row.lote}`}
+                            title={row.isCancelledSwab ? "Este SWAB já foi cancelado" : "Cancelar SWAB"}
+                            disabled={row.isCancelledSwab || !hasPermission}
+                            variant="ghost"
+                            colorPalette="red"
+                            size="xs"
+                            onClick={(event) => event.stopPropagation()}
+                        >
+                            <FiTrash2 style={{ width: 14, height: 14 }} />
+                        </IconButton>
+                    </Dialog.Trigger>
+                )}
+            </Can>
 
             <Portal>
                 <Dialog.Backdrop />

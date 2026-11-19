@@ -29,7 +29,7 @@ export const items: RoutesNavType[] = [
     {
         label: "Consultar Swab ",
         href: "/swab/consult",
-        roles: [Role.LAB, Role.ADMIN, Role.OWNER],
+        roles: [Role.LAB, Role.ADMIN, Role.OWNER, Role.PRODUCTION],
         icon: <FiFilter />,
     },
 

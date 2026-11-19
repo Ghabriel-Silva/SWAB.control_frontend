@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { OptionalView } from "@/app/(private)/components";
 import { AreaSelect } from "@/app/(private)/area/components/AreaSelect";
 import { saveAreaId } from "@/app/(private)/area/hooks/useSavedAreaId";
@@ -25,6 +25,9 @@ import { DateFilter } from "./DateFilter";
 import { FilterActions } from "./FilterActions";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { filterSwabSchema, SwabFilterValues } from "../validations/filter.swab.schema";
+import { Can } from "@/permissions/can";
+import { Role } from "@/permissions/roles";
+import { CanView } from "@/permissions/canView";
 
 interface FilterSwabProps {
     locations: Location[];
@@ -73,7 +76,7 @@ export function FilterSwab({
         saveAreaId(filters.areaId)
 
         reset(filters, { keepFieldsRef: true })
-        
+
         router.push(`${pathname}?${params.toString()}`, { scroll: false })
     }
 
@@ -121,11 +124,18 @@ export function FilterSwab({
                                 loading={locationsLoading}
                                 error={locationsError}
                             />
-                            <OperatorFilter />
+                            <CanView userRole={[Role.ADMIN, Role.LAB, Role.OWNER]} >
+                                <OperatorFilter />
+                            </CanView>
+
                             <TypeFilter />
                             <ResultFilter />
                             <CancelledFilter />
-                            <InternalCodeFilter />
+                            
+                            <CanView userRole={[Role.ADMIN, Role.LAB, Role.OWNER]} >
+                                <InternalCodeFilter />
+                            </CanView>
+            
                             <DateFilter
                                 name="startDate"
                                 label="Data inicial"

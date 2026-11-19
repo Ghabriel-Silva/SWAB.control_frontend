@@ -8,7 +8,7 @@ import { SwabGridRow } from "@/app/(private)/swab/types/swab.data-grid";
 import { SwabCheckResult, SwabCheckType } from "@/app/(private)/types/swab";
 import { TypeSwab, Result, IsCancelled, DialogContainer, ContainerRow, FloatingJustification } from "@/app/(private)/swab/components/index";
 import { defaultValue } from "../../utils/defaultValue";
-import { HStack } from "@chakra-ui/react";
+import { Badge, HStack, Text } from "@chakra-ui/react";
 import { CancelSwabDialog } from "../dialog/CancelSwabDialog";
 
 
@@ -18,6 +18,9 @@ export const columns: GridColDef<SwabGridRow>[] = [
         field: "lote",
         headerName: "Lote",
         flex: 1.5,
+        sortable: false,
+        filterable: false,
+        disableExport: true,
         minWidth: 100,
         renderCell: (params) => {
             return (
@@ -31,6 +34,9 @@ export const columns: GridColDef<SwabGridRow>[] = [
         field: "dateHours",
         headerName: "Data/Hora",
         flex: 1.5,
+        sortable: false,
+        filterable: false,
+        disableExport: true,
         minWidth: 100,
         valueGetter: (value) => {
             if (!value) return "-"
@@ -48,6 +54,9 @@ export const columns: GridColDef<SwabGridRow>[] = [
         field: "dateHourRealization",
         headerName: "Validado",
         flex: 1.5,
+        sortable: false,
+        filterable: false,
+        disableExport: true,
         minWidth: 100,
         valueGetter: (value) => {
             if (!value) return '-'
@@ -62,11 +71,18 @@ export const columns: GridColDef<SwabGridRow>[] = [
         field: "location",
         headerName: "Tank/Silo",
         flex: 1,
-        minWidth: 100,
+        sortable: false,
+        filterable: false,
+        disableExport: true,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams<SwabGridRow, string>) => {
             return (
-                <HStack justifyContent={'space-between'}>
-                    <p>{params.value} </p>
+                <HStack justifyContent={'space-between'} height={"100%"}  >      
+                        <Text truncate aria-label={
+                            `Tanque de armazenamento e reprocessamento de produtos industriais
+                             ${params.row.location}`} title={params.row.location} >
+                            {params.value}
+                        </Text>            
                     <FloatingJustification
                         location={params.row.location}
                         title={`Obs. Ultima reprovação ${params.row.location}`}
@@ -83,11 +99,17 @@ export const columns: GridColDef<SwabGridRow>[] = [
         field: "lastFauct",
         headerName: "Torneira anterior",
         flex: 1,
+        sortable: false,
+        filterable: false,
+        disableExport: true,
         minWidth: 100,
     },
     {
         field: "newFaucet",
         headerName: "Torneira Atual",
+        sortable: false,
+        filterable: false,
+        disableExport: true,
         flex: 1,
         minWidth: 100,
         valueGetter: (value) => {
@@ -101,6 +123,9 @@ export const columns: GridColDef<SwabGridRow>[] = [
         field: "typeSwab",
         headerName: "Tipo Swab",
         flex: 1,
+        sortable: false,
+        filterable: false,
+        disableExport: true,
         minWidth: 100,
         renderCell: (params: GridRenderCellParams<SwabGridRow, SwabCheckType>) => {
             return (
@@ -112,6 +137,9 @@ export const columns: GridColDef<SwabGridRow>[] = [
         field: "resultSwab",
         headerName: "Resultado",
         flex: 1,
+        sortable: false,
+        filterable: false,
+        disableExport: true,
         minWidth: 100,
         renderCell: (
             params: GridRenderCellParams<SwabGridRow, SwabCheckResult>
@@ -125,6 +153,9 @@ export const columns: GridColDef<SwabGridRow>[] = [
         field: "valueAtp",
         headerName: "Valor ATP",
         flex: 1,
+        sortable: false,
+        filterable: false,
+        disableExport: true,
         valueGetter: (value) => {
             return (
                 defaultValue(value)
@@ -136,6 +167,9 @@ export const columns: GridColDef<SwabGridRow>[] = [
         field: "batch",
         headerName: "Lote ATP",
         flex: 1,
+        sortable: false,
+        filterable: false,
+        disableExport: true,
         valueGetter: (value) => {
             return (
                 defaultValue(value)
@@ -144,8 +178,11 @@ export const columns: GridColDef<SwabGridRow>[] = [
     },
     {
         field: "isCancelledSwab",
-        headerName: "Swab Cancelado",
+        headerName: "Cancelado",
         flex: 1,
+        sortable: false,
+        filterable: false,
+        disableExport: true,
         renderCell: (params: GridRenderCellParams<SwabGridRow, boolean>) => {
             return (
                 <IsCancelled value={params.value} />
@@ -158,6 +195,9 @@ export const columns: GridColDef<SwabGridRow>[] = [
         field: 'operator',
         headerName: "Analista",
         flex: 1,
+        sortable: false,
+        filterable: false,
+        disableExport: true,
         valueGetter: (value) => {
             return (
                 defaultValue(value)
